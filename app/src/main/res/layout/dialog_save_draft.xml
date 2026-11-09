@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_white_rounded_top"
+    android:orientation="vertical"
+    android:padding="@dimen/space_margin">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Сохранить черновик?"
+        android:textAppearance="@style/TextAppearance.App.Title.OnPages"
+        android:textColor="@color/color_beige_dark" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_s"
+        android:gravity="center"
+        android:text="Вы потеряете все изменения, если не сохраните их сейчас. Вкладка черновики появится в профиле."
+        android:textAppearance="@style/TextAppearance.App.Subtext"
+        android:textColor="@color/color_beige_dark" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_margin"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnDelete"
+            style="@style/ButtonStyle.Secondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/space_s"
+            android:text="Удалить" />
+
+        <Button
+            android:id="@+id/btnSaveDraft"
+            style="@style/ButtonStyle.Primary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Сохранить" />
+    </LinearLayout>
+
+</LinearLayout>

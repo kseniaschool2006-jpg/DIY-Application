@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/color_beige_light" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="25dp"
+        android:text="Склад"
+        android:textAppearance="@style/TextAppearance.App.Title.OnPages"
+        android:textColor="@color/color_beige_dark" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/bg_white_rounded_top"
+        android:orientation="vertical"
+        android:padding="@dimen/space_margin">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+
+            app:tabMode="scrollable"
+            app:tabGravity="center"
+
+            app:tabTextAppearance="@style/TextAppearance.App.Title"
+            app:tabPaddingStart="20dp"
+            app:tabPaddingEnd="20dp"
+
+            app:tabIndicatorColor="@color/color_beige_dark"
+            app:tabIndicatorHeight="2dp"
+            app:tabSelectedTextColor="@color/color_beige_dark"
+            app:tabTextColor="@color/color_beige_dark_30"
+            app:tabRippleColor="@null" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/space_medium"
+            android:clipToPadding="false"
+            android:paddingBottom="100dp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/space_margin"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/fabMain"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardBackgroundColor="@color/color_white"
+            app:cardCornerRadius="30dp"
+            app:cardElevation="4dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/color_beige_dark_30"
+            app:rippleColor="@color/color_beige_dark_30">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_material"
+                app:tint="@color/color_green" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <FrameLayout
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="bottom|end"
+            android:elevation="8dp"
+            android:background="@drawable/bg_circle_green">
+
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_add"
+                app:tint="@color/color_white" />
+        </FrameLayout>
+
+    </FrameLayout>
+
+
+    </FrameLayout>

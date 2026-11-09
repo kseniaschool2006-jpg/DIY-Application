@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DIYProject</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="tag_hash_format"># %1$s</string>
+</resources>

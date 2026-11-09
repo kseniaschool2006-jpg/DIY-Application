@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/toCheckFragment">
+
+    <fragment
+        android:id="@+id/storageFragmentMain"
+        android:name="com.example.diyproject.ui.storage.StorageFragmentMain"
+        android:label="StorageFragmentMain" >
+        <action
+            android:id="@+id/action_storageFragmentMain_to_newMaterialFragment1"
+            app:destination="@id/newMaterialFragment1" />
+    </fragment>
+    <fragment
+        android:id="@+id/newMaterialFragment1"
+        android:name="com.example.diyproject.ui.storage.NewMaterialFragment1"
+        android:label="fragment_new_material1"
+        tools:layout="@layout/fragment_new_material1" >
+        <action
+            android:id="@+id/action_newMaterialFragment1_to_newMaterialFragment2"
+            app:destination="@id/newMaterialFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/newMaterialFragment2"
+        android:name="com.example.diyproject.ui.storage.NewMaterialFragment2"
+        android:label="fragment_new_material2"
+        tools:layout="@layout/fragment_new_material2" >
+        <action
+            android:id="@+id/action_newMaterialFragment2_to_editMaterialFragment"
+            app:destination="@id/editMaterialFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/categorySelectionFragment"
+        android:name="com.example.diyproject.ui.instruction.CategorySelectionFragment"
+        android:label="fragment_category_selection"
+        tools:layout="@layout/fragment_category_selection" >
+        <argument
+            android:name="selectedThemes"
+            app:argType="string[]"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/editMaterialFragment"
+        android:name="com.example.diyproject.ui.storage.EditMaterialFragment"
+        android:label="fragment_edit_material"
+        tools:layout="@layout/fragment_edit_material" >
+        <action
+            android:id="@+id/action_editMaterialFragment_to_categorySelectionFragment"
+            app:destination="@id/categorySelectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editInstructionFragment"
+        android:name="com.example.diyproject.ui.instruction.EditInstructionFragment"
+        android:label="fragment_edit_instruction"
+        tools:layout="@layout/fragment_edit_instruction" >
+        <argument
+            android:name="instructionImageUri"
+            app:argType="string"
+            android:defaultValue="empty"/>
+        <action
+            android:id="@+id/action_editInstructionFragment_to_categorySelectionFragment"
+            app:destination="@id/categorySelectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/toCheckFragment"
+        android:name="com.example.diyproject.ui.common.ToCheckFragment"
+        android:label="fragment_to_check"
+        tools:layout="@layout/fragment_to_check" >
+        <action
+            android:id="@+id/action_toCheckFragment_to_storageFragmentMain"
+            app:destination="@id/storageFragmentMain" />
+        <action
+            android:id="@+id/action_toCheckFragment_to_editInstructionFragment"
+            app:destination="@id/editInstructionFragment" />
+
+    </fragment>
+</navigation>

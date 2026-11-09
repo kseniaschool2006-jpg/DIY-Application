@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.DIYProject" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/color_white</item>
+    </style>
+
+    <style name="Theme.DIYProject" parent="Base.Theme.DIYProject" />
+
+
+<!--    может пригодится, может нет, это для элементов внутри других кликабельных элементов типо плюсик, редактировать-->
+    <style name="CircleIconStyle">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:background">@drawable/bg_circle_green</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:padding">@dimen/space_s</item>
+    </style>
+
+
+
+</resources>

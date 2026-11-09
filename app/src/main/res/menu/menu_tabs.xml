@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/tab_all" android:title="Все" />
+    <item android:id="@+id/tab_manual" android:title="Руководство" />
+    <item android:id="@+id/tab_repair" android:title="Ремонт" />
+    <item android:id="@+id/tab_garden" android:title="Сад" />
+</menu>

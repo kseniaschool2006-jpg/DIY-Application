@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--ОТСТУПЫ-->
+
+    <!-- Между элементами внутри -->
+    <dimen name="space_xs">5dp</dimen>
+
+    <!-- 1 уровень близости-->
+    <dimen name="space_s">10dp</dimen>
+
+    <!-- Боковой отступ -->
+    <dimen name="space_margin">20dp</dimen>
+
+    <!-- 2 уровень близости-->
+    <dimen name="space_medium">20dp</dimen>
+
+    <!-- 3 уровень близости -->
+    <dimen name="space_large">40dp</dimen>
+
+
+    <!-- СКРУГЛЕНИЯ -->
+    <dimen name="radius_small">5dp</dimen>
+
+    <dimen name="radius_standard">20dp</dimen>
+
+    <dimen name="radius_large">40dp</dimen>
+
+    <dimen name="radius_pill">100dp</dimen>
+
+
+
+    <dimen name="fab_main_size">60dp</dimen>
+    <dimen name="fab_plus_size">28dp</dimen>
+
+
+</resources>

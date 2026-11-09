@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Заголовок (16px semibold) -->
+    <style name="TextAppearance.App.Title" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/color_beige_dark</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <!-- Заголовок на страницах (18 px semibold) -->
+    <style name="TextAppearance.App.Title.OnPages" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/color_beige_dark</item>
+    </style>
+
+    <!-- Обычный текст (16 px medium) -->
+    <style name="TextAppearance.App.Body" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat_medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/color_beige_dark</item>
+    </style>
+
+    <!-- Подтекст (12 px regular) -->
+    <style name="TextAppearance.App.Subtext" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/color_beige_dark</item>
+    </style>
+
+    <!-- Заголовок подтекста (12 px semibold) -->
+    <style name="TextAppearance.App.Subtext.Title" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/color_beige_dark</item>
+    </style>
+
+
+
+
+
+
+
+
+
+</resources>

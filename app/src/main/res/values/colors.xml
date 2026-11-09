@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- белый -->
+    <color name="color_white">#FFFFFF</color>
+
+    <!-- бежевый светл -->
+    <color name="color_beige_light">#F5D8B9</color>
+
+    <!-- бежевый темный -->
+    <color name="color_beige_dark">#42362E</color>
+
+
+    <!-- бежевый темный 30 проценнтов прощрасность -->
+    <color name="color_beige_dark_30">#4042362E</color>
+
+    <!-- оранжевый -->
+    <color name="color_orange">#D96E51</color>
+
+    <!-- зеленый -->
+    <color name="color_green">#5B7065</color>
+
+    <!-- оттенок осн меню  -->
+    <color name="color_menu_bg_main">#F8F5F1</color>
+
+    <!-- оттенок второй меню  -->
+    <color name="color_menu_bg_secondary">#F4E8DA</color>
+
+    <!-- Светлее темно бежевого для подписей (АВТОРИЗАЦИЯ, РЕДАКТИРОВАНИЕ, СОЗДАНИЕ ПОСТОВ) -->
+    <color name="text_secondary">#42362E</color>
+</resources>

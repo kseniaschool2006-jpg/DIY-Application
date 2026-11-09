@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Основная кнопка -->
+    <style name="ButtonStyle.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <item name="backgroundTint">@color/color_green</item>
+        <item name="android:textColor">@color/color_white</item>
+
+        <item name="android:paddingTop">@dimen/space_s</item>
+        <item name="android:paddingBottom">@dimen/space_s</item>
+
+        <item name="cornerRadius">@dimen/radius_pill</item>
+
+        <item name="android:textAppearance">@style/TextAppearance.App.Title</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <!-- Второстепенная кнопка -->
+    <style name="ButtonStyle.Secondary" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <item name="backgroundTint">@color/color_white</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/color_green</item>
+
+        <item name="android:textColor">@color/color_green</item>
+
+        <item name="android:paddingTop">@dimen/space_s</item>
+        <item name="android:paddingBottom">@dimen/space_s</item>
+
+        <item name="cornerRadius">@dimen/radius_pill</item>
+
+        <item name="android:textAppearance">@style/TextAppearance.App.Title</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+
+    <!-- Стиль для иконок-кнопок -->
+    <style name="IconButtonStyle" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+
+        <item name="android:background">@drawable/bg_icon_ripple</item>
+
+        <item name="android:padding">12dp</item>
+
+        <item name="android:scaleType">centerInside</item>
+
+        <item name="android:tint">@color/color_beige_dark</item>
+    </style>
+
+    <style name="IconButtonStyle.Green">
+        <item name="android:tint">@color/color_green</item>
+    </style>
+
+
+
+
+    <style name="TagStyle"/>
+
+    <!-- Стиль для оранжевого хештега -->
+    <style name="TagStyle.Orange">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_tag_orange</item>
+        <item name="android:textColor">@color/color_white</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.Subtext.Title</item> <!-- 12sp semibold -->
+        <item name="android:paddingStart">@dimen/space_s</item>
+        <item name="android:paddingEnd">@dimen/space_s</item>
+        <item name="android:paddingTop">@dimen/space_xs</item>
+        <item name="android:paddingBottom">@dimen/space_xs</item>
+    </style>
+
+    <!-- Стиль для зеленого хештега -->
+    <style name="TagStyle.Green">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_tag_green</item>
+        <item name="android:textColor">@color/color_white</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.Subtext.Title</item>
+        <item name="android:paddingStart">@dimen/space_s</item>
+        <item name="android:paddingEnd">@dimen/space_s</item>
+        <item name="android:paddingTop">@dimen/space_xs</item>
+        <item name="android:paddingBottom">@dimen/space_xs</item>
+    </style>
+
+
+
+<!--    это для карточки материала на Складе-->
+    <style name="CardStyle" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardBackgroundColor">@color/color_white</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardCornerRadius">@dimen/radius_standard</item>
+        <item name="cardElevation">0dp</item>
+        <item name="android:layout_marginBottom">@dimen/space_s</item>
+
+    </style>
+
+    <style name="CardStyle.Material" parent="CardStyle">
+        <item name="strokeColor">@color/color_beige_dark_30</item>
+        <item name="contentPaddingTop">@dimen/space_s</item>
+        <item name="contentPaddingBottom">@dimen/space_s</item>
+    </style>
+
+    <style name="CardStyle.Selector" parent="CardStyle">
+        <item name="strokeColor">@color/color_beige_dark</item>
+        <item name="contentPaddingTop">@dimen/space_s</item>
+        <item name="contentPaddingBottom">@dimen/space_s</item>
+    </style>
+
+
+
+
+
+<!--плашка для поста и для отображения категории-->
+    <style name="ChipStyle" parent="Widget.MaterialComponents.Chip.Action" />
+
+    <style name="ChipStyle.Category" parent="ChipStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <item name="android:textColor">@color/color_beige_dark</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+
+        <item name="android:backgroundTint">@null</item>
+        <item name="chipBackgroundColor">@color/color_white</item>
+        <item name="chipStrokeColor">@color/color_beige_dark</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipCornerRadius">50dp</item>
+
+        <item name="chipIconTint">@color/color_beige_dark</item>
+        <item name="chipIconSize">16dp</item>
+
+        <item name="chipMinHeight">28dp</item>
+
+        <item name="android:layout_margin">0dp</item>
+
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="ensureMinTouchTargetSize">false</item>
+
+        <item name="iconStartPadding">2dp</item>
+        <item name="iconEndPadding">0dp</item>
+    </style>
+
+
+    <!-- Базовый стиль для карточки-кнопки (белая с рамкой) -->
+    <style name="Widget.App.ActionCard" parent="Widget.MaterialComponents.CardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_columnWeight">1</item>
+
+        <item name="cardCornerRadius">@dimen/radius_standard</item>
+        <item name="cardElevation">0dp</item>
+
+        <item name="cardBackgroundColor">@color/color_white</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="strokeColor">@color/color_green</item>
+
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="rippleColor">@color/color_beige_dark_30</item>
+
+        <item name="android:textColor">@color/color_beige_dark</item>
+        <item name="android:tint">@color/color_beige_dark</item>
+    </style>
+
+    <style name="Widget.App.ActionCard.Green">
+        <item name="cardBackgroundColor">@color/color_green</item>
+        <item name="strokeWidth">0dp</item>
+
+        <item name="android:textColor">@color/color_white</item>
+        <item name="android:tint">@color/color_white</item>
+    </style>
+
+
+
+
+
+</resources>
