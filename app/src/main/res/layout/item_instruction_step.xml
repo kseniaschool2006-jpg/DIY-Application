@@ -14,12 +14,13 @@
         android:paddingStart="@dimen/space_margin"
         android:paddingEnd="@dimen/space_s">
 
-        <TextView
+        <EditText
             android:id="@+id/tvStepTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Инструкция"
-            android:textAppearance="@style/TextAppearance.App.Subtext.Title"
+            android:hint="Введите название для пункта инструкции"
+            android:inputType="text"
+            android:textAppearance="@style/TextAppearance.App.Title"
             android:textColor="@color/color_beige_dark"
             app:layout_constraintEnd_toStartOf="@id/ivStepIcon"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +34,6 @@
             android:background="@null"
             android:hint="Шаг 1"
             android:inputType="text"
-            android:maxLines="1"
             android:textAppearance="@style/TextAppearance.App.Body"
             android:textColor="@color/color_beige_dark"
             android:textColorHint="@color/color_beige_dark_30"

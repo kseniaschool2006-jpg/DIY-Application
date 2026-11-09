@@ -13,12 +13,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.example.diyproject.R;
@@ -105,30 +108,15 @@ public class EditInstructionFragment extends Fragment {
         });
 
 
-        // Находим карточку выбора темы
+        // логика выбора темы\категории, позже решу как лучше обозвать
         View cardTheme = view.findViewById(R.id.cardTheme);
-        TextView tvThemeTitle = cardTheme.findViewById(R.id.tvTitle);
-        tvThemeTitle.setText("Выбор темы");
+        ImageButton ivArrow = cardTheme.findViewById(R.id.ivArrow);
 
-        cardTheme.setOnClickListener(v -> {
+        cardTheme.setOnClickListener(v -> openCategorySelection(cardTheme));
 
-            ChipGroup chipGroup = cardTheme.findViewById(R.id.chipGroup);
-            ArrayList<String> currentThemes = new ArrayList<>();
-            for (int i = 0; i < chipGroup.getChildCount(); i++) {
-                Chip chip = (Chip) chipGroup.getChildAt(i);
-                currentThemes.add(chip.getText().toString());
-            }
-
-            EditInstructionFragmentDirections.ActionEditInstructionFragmentToCategorySelectionFragment action =
-                    EditInstructionFragmentDirections.actionEditInstructionFragmentToCategorySelectionFragment();
-
-            if (currentThemes.isEmpty()) {
-                action.setSelectedThemes(null);
-            } else {
-                action.setSelectedThemes(currentThemes.toArray(new String[0]));
-            }
-
-            NavHostFragment.findNavController(EditInstructionFragment.this).navigate(action);
+        // Обработчик для стрелки
+        ivArrow.setOnClickListener(v -> {
+            openCategorySelection(cardTheme);
         });
 
         getParentFragmentManager().setFragmentResultListener("themeRequest", getViewLifecycleOwner(), (requestKey, result) -> {
@@ -141,19 +129,57 @@ public class EditInstructionFragment extends Fragment {
 
 
                 for (String theme : selectedThemes) {
-
-                    ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(requireContext(), R.style.ChipStyle_Category);
-
-                    Chip chip = new Chip(contextThemeWrapper);
+                    Chip chip = (Chip) getLayoutInflater().inflate(R.layout.item_chip_category, chipGroup, false);
                     chip.setText(theme);
-
-                    chip.setChipIconResource(R.drawable.ic_star);
-
                     chipGroup.addView(chip);
                 }
             }
         });
 
+
+        // карточка времени
+        View cardTimeInclude = view.findViewById(R.id.cardTime);
+
+        View materialCard = cardTimeInclude.findViewById(R.id.cardTimeRoot);
+
+        TextView tvSelectedTime = cardTimeInclude.findViewById(R.id.tvSelectedTime);
+
+        materialCard.setOnClickListener(v -> {
+            ContextThemeWrapper wrapper = new ContextThemeWrapper(requireContext(), R.style.PopupMenuTheme);
+            PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.CENTER);
+            popupMenu.getMenu().add("15 минут");
+            popupMenu.getMenu().add("30 минут");
+            popupMenu.getMenu().add("1 час");
+            popupMenu.getMenu().add("2 часа");
+            popupMenu.getMenu().add("3 часа");
+            popupMenu.getMenu().add("Более 3 часов");
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                tvSelectedTime.setText(item.getTitle());
+                return true;
+            });
+            popupMenu.show();
+        });
+    }
+
+    private void openCategorySelection(View cardTheme) {
+        ChipGroup chipGroup = cardTheme.findViewById(R.id.chipGroup);
+        ArrayList<String> currentThemes = new ArrayList<>();
+        for (int i = 0; i < chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroup.getChildAt(i);
+            currentThemes.add(chip.getText().toString());
+        }
+
+        EditInstructionFragmentDirections.ActionEditInstructionFragmentToCategorySelectionFragment action =
+                EditInstructionFragmentDirections.actionEditInstructionFragmentToCategorySelectionFragment();
+
+        if (currentThemes.isEmpty()) {
+            action.setSelectedThemes(null);
+        } else {
+            action.setSelectedThemes(currentThemes.toArray(new String[0]));
+        }
+
+        NavHostFragment.findNavController(this).navigate(action);
     }
 
 

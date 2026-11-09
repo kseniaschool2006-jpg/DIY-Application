@@ -7,7 +7,7 @@
     android:layout_marginBottom="@dimen/space_medium">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardTime"
+        android:id="@+id/cardTimeRoot"
         style="@style/CardStyle.Selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

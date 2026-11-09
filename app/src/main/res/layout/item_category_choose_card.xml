@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:chipSpacingHorizontal="@dimen/space_xs"
-            app:chipSpacingVertical="0dp"
+            app:chipSpacingVertical="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/ivArrow"
             app:layout_constraintStart_toStartOf="parent"

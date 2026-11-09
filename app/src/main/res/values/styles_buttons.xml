@@ -181,6 +181,17 @@
         <item name="android:tint">@color/color_white</item>
     </style>
 
+    <!-- Выпадающее меню PopupMenu -->
+    <style name="PopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/bg_popup_menu</item>
+        <item name="android:itemTextAppearance">@style/TextAppearance.App.Body</item>
+    </style>
+
+    <style name="PopupMenuTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="popupMenuStyle">@style/PopupMenuStyle</item>
+        <item name="android:popupMenuStyle">@style/PopupMenuStyle</item>
+    </style>
+
 
 
 
