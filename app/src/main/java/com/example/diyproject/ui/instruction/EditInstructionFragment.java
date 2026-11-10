@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -30,11 +32,22 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EditInstructionFragment extends Fragment {
 
 
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+    private InstructionStepAdapter stepAdapter;
+    private int pendingImagePosition = -1;
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickStepImage =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null && stepAdapter != null && pendingImagePosition != -1) {
+                    stepAdapter.setImageForStep(pendingImagePosition, uri);
+                    pendingImagePosition = -1;
+                }
+            });
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -159,6 +172,32 @@ public class EditInstructionFragment extends Fragment {
                 return true;
             });
             popupMenu.show();
+        });
+
+
+
+        // Настройка RecyclerView для шагов
+        RecyclerView rvInstructionSteps = view.findViewById(R.id.rvInstructionSteps);
+        rvInstructionSteps.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        List<InstructionStep> steps = new ArrayList<>();
+        // С самого начала один шаг для заполнения
+        steps.add(new InstructionStep("", null));
+
+        stepAdapter = new InstructionStepAdapter(steps, position -> {
+            pendingImagePosition = position;
+            pickStepImage.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
+        });
+        rvInstructionSteps.setAdapter(stepAdapter);
+
+        TextView tvAddStep = view.findViewById(R.id.tvAddStep);
+        tvAddStep.setOnClickListener(v -> {
+            InstructionStep newStep = new InstructionStep("", null);
+            steps.add(newStep);
+            stepAdapter.notifyItemInserted(steps.size() - 1);
+            rvInstructionSteps.smoothScrollToPosition(steps.size() - 1);
         });
     }
 

@@ -15,11 +15,13 @@
         android:paddingEnd="@dimen/space_s">
 
         <EditText
-            android:id="@+id/tvStepTitle"
+            android:id="@+id/etStepTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Введите название для пункта инструкции"
+            android:hint="Введите подзаголовок"
+            android:background="@null"
             android:inputType="text"
+            android:saveEnabled="false"
             android:textAppearance="@style/TextAppearance.App.Title"
             android:textColor="@color/color_beige_dark"
             app:layout_constraintEnd_toStartOf="@id/ivStepIcon"
@@ -34,13 +36,36 @@
             android:background="@null"
             android:hint="Шаг 1"
             android:inputType="text"
+            android:saveEnabled="false"
             android:textAppearance="@style/TextAppearance.App.Body"
             android:textColor="@color/color_beige_dark"
             android:textColorHint="@color/color_beige_dark_30"
             app:layout_constraintEnd_toStartOf="@id/ivStepIcon"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvStepTitle" />
+            app:layout_constraintTop_toBottomOf="@id/etStepTitle" />
 
+        <!-- Карточка для превью фотографии шага -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardStepPreview"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:visibility="gone"
+            app:cardCornerRadius="@dimen/radius_small"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ivStepPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Кнопка выбора фото из галереи -->
         <ImageButton
             android:id="@+id/ivStepIcon"
             style="@style/IconButtonStyle.Green"

@@ -124,18 +124,10 @@
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/space_medium">
 
-                <include
-                    android:id="@+id/cardInstructionHeader"
-                    layout="@layout/item_instruction_step"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvInstructionSteps"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_s"
-                    android:visibility="gone"
                     android:nestedScrollingEnabled="false" />
 
                 <TextView
