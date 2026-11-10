@@ -10,21 +10,29 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.diyproject.R;
 import com.example.diyproject.ui.common.SaveDraftBottomSheet;
@@ -32,10 +40,17 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EditInstructionFragment extends Fragment {
 
+    private final Set<String> hashtagSet = new LinkedHashSet<>();
+    private boolean isUpdatingDescription = false;
 
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private InstructionStepAdapter stepAdapter;
@@ -175,6 +190,84 @@ public class EditInstructionFragment extends Fragment {
         });
 
 
+        // редактор названия (100 символов)
+        View titleInclude = view.findViewById(R.id.cardTitle);
+        if (titleInclude != null) {
+            EditText etTitle = titleInclude.findViewById(R.id.etTitle);
+            TextView tvTitleCounter = titleInclude.findViewById(R.id.tvTitleCounter);
+
+            etTitle.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    tvTitleCounter.setText(s.length() + "/100");
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
+        }
+
+
+
+
+        View descInclude = view.findViewById(R.id.cardDescription);
+        EditText etDescription = descInclude.findViewById(R.id.etDescription);
+        TextView tvAddHashtag = descInclude.findViewById(R.id.tvAddHashtag);
+        ChipGroup chipGroupTags = descInclude.findViewById(R.id.chipGroupTags);
+
+        // Кнопка "+ Добавить хештег" открывает диалог
+        tvAddHashtag.setOnClickListener(v -> showAddHashtagDialog(chipGroupTags));
+
+        etDescription.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (isUpdatingDescription) return;
+
+                TextView tvDescCounter = descInclude.findViewById(R.id.tvDescCounter);
+                tvDescCounter.setText(s.length() + "/400");
+
+                String currentText = s.toString();
+                // Ищем завершенные хештеги вида #слово (только когда после него введен пробел/перенос \s)
+                Pattern pattern = Pattern.compile("#([a-zA-Zа-яА-Я0-9_]+)\\s");
+                Matcher matcher = pattern.matcher(currentText);
+
+                boolean found = false;
+                StringBuffer sb = new StringBuffer();
+                while (matcher.find()) {
+                    found = true;
+                    String foundTag = matcher.group(1);
+                    if (foundTag != null && !foundTag.trim().isEmpty()) {
+                        hashtagSet.add(foundTag.trim());
+                    }
+                    matcher.appendReplacement(sb, "");
+                }
+
+                if (found) {
+                    matcher.appendTail(sb);
+                    String updatedText = sb.toString();
+
+                    isUpdatingDescription = true;
+                    etDescription.setText(updatedText);
+                    etDescription.setSelection(updatedText.length());
+                    isUpdatingDescription = false;
+
+                    refreshHashtagChips(chipGroupTags);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+
+
 
         // Настройка RecyclerView для шагов
         RecyclerView rvInstructionSteps = view.findViewById(R.id.rvInstructionSteps);
@@ -198,6 +291,69 @@ public class EditInstructionFragment extends Fragment {
             steps.add(newStep);
             stepAdapter.notifyItemInserted(steps.size() - 1);
             rvInstructionSteps.smoothScrollToPosition(steps.size() - 1);
+        });
+    }
+
+    private void addHashtag(String tag, ChipGroup chipGroup) {
+        if (tag == null) return;
+        String cleanTag = tag.replace("#", "").trim();
+        if (!cleanTag.isEmpty()) {
+            hashtagSet.add(cleanTag);
+            refreshHashtagChips(chipGroup);
+        }
+    }
+
+    private void refreshHashtagChips(ChipGroup chipGroup) {
+        int childCount = chipGroup.getChildCount();
+        if (childCount > 1) {
+            chipGroup.removeViews(1, childCount - 1);
+        }
+
+        for (String tag : hashtagSet) {
+            TextView tagView = (TextView) getLayoutInflater().inflate(R.layout.item_hashtag, chipGroup, false);
+            tagView.setText(getString(R.string.tag_hash_format, tag));
+            tagView.setOnClickListener(v -> {
+                hashtagSet.remove(tag);
+                refreshHashtagChips(chipGroup);
+            });
+            chipGroup.addView(tagView);
+        }
+    }
+
+    private void showAddHashtagDialog(ChipGroup chipGroupTags) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_hashtag, null);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        dialog.show();
+
+        AutoCompleteTextView etNewTag = dialogView.findViewById(R.id.etNewTag);
+        Button btnAddTag = dialogView.findViewById(R.id.btnAddTag);
+
+        String[] popularTags = {"вязание", "ремонт", "игрушки", "пряжа", "шитье", "реставрация", "поделки", "новогодние"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                R.layout.item_dropdown_tag, popularTags);
+        etNewTag.setAdapter(adapter);
+
+        etNewTag.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedTag = (String) parent.getItemAtPosition(position);
+            etNewTag.setText(selectedTag);
+            etNewTag.setSelection(selectedTag.length());
+        });
+
+        btnAddTag.setOnClickListener(v -> {
+            String newTag = etNewTag.getText().toString().trim();
+            if (!newTag.isEmpty()) {
+                addHashtag(newTag, chipGroupTags);
+                dialog.dismiss();
+            } else {
+                Toast.makeText(requireContext(), "Введите тег", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

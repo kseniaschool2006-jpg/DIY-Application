@@ -42,7 +42,8 @@
                 android:textAppearance="@style/TextAppearance.App.Body"
                 android:textColor="@color/color_beige_dark"
                 android:textColorHint="@color/color_beige_dark_30"
-                android:inputType="text"
+                android:inputType="textMultiLine"
+                android:minLines="1"
                 android:maxLength="100" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

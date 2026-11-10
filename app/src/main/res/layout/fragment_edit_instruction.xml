@@ -8,13 +8,11 @@
     android:background="@color/color_white"
     tools:context=".ui.instruction.EditInstructionFragment">
 
-    <!-- 1. Верхняя панель (тулбар) -->
     <include
         layout="@layout/view_custom_toolbar"
         android:id="@+id/customToolbar"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 2. Прокручиваемый контент -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -86,11 +84,13 @@
                 android:layout_marginBottom="@dimen/space_medium" />
 
             <include
+                android:id="@+id/cardTitle"
                 layout="@layout/view_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <include
+                android:id="@+id/cardDescription"
                 layout="@layout/view_input_with_tag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

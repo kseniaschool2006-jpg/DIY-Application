@@ -46,13 +46,28 @@
                 android:minLines="1"
                 android:maxLength="400" />
 
-            <TextView
-                android:id="@+id/tvTag"
-                style="@style/TagStyle.Green"
-                android:layout_width="wrap_content"
+            <!-- ChipGroup со с переносом строк: кнопка первыми, хештеги после нее -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupTags"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_s"
-                android:text="# хештег" />
+                app:chipSpacingHorizontal="@dimen/space_xs"
+                app:chipSpacingVertical="@dimen/space_xs"
+                app:singleLine="false">
+
+                <TextView
+                    android:id="@+id/tvAddHashtag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+ Добавить хештег"
+                    android:textAppearance="@style/TextAppearance.App.Body"
+                    android:textColor="@color/color_green"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground" />
+
+            </com.google.android.material.chip.ChipGroup>
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
