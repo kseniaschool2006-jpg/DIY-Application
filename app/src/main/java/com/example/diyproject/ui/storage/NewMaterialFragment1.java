@@ -56,7 +56,7 @@ public class NewMaterialFragment1 extends Fragment {
         libraryMaterials.add(new MaterialItem("Гвозди", "5см, тонкие, в кладовой", "мелкий ремонт", R.drawable.ic_material));
         libraryMaterials.add(new MaterialItem("Пряжа", "Зеленая пряжа, использовать крючек 4мм", "новогодние игрушки", R.drawable.ic_material));
 
-        MaterialAdapter adapter = new MaterialAdapter(libraryMaterials, false, new MaterialAdapter.OnMaterialClickListener() {
+        MaterialAdapter adapter = new MaterialAdapter(libraryMaterials, false, false, new MaterialAdapter.OnMaterialClickListener() {
             @Override
             public void onCardClick(MaterialItem item) {
                 NavController navController = NavHostFragment.findNavController(NewMaterialFragment1.this);

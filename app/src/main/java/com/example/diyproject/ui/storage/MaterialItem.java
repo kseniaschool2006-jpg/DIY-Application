@@ -1,7 +1,8 @@
 package com.example.diyproject.ui.storage;
 
+import java.io.Serializable;
 
-public class MaterialItem {
+public class MaterialItem implements Serializable {
     private String title;
     private String description;
     private String tag;

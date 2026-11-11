@@ -93,7 +93,7 @@ public class StorageFragmentMain extends Fragment {
         materials.add(new MaterialItem("Пряжа", "Зеленая пряжа", "новогодние игрушки", R.drawable.ic_material));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        MaterialAdapter adapter = new MaterialAdapter(materials, true, new MaterialAdapter.OnMaterialClickListener() {
+        MaterialAdapter adapter = new MaterialAdapter(materials, true,  false,  new MaterialAdapter.OnMaterialClickListener() {
             @Override
             public void onCardClick(MaterialItem item) {
                 // ПЕРЕХОД НА ЭКРАН РЕДАКТИРОВАНИЯ С ПЕРЕДАЧЕЙ ДАННЫХ

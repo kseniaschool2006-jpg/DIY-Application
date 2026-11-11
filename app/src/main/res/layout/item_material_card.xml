@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/CardStyle.Material"
-    android:layout_marginBottom="@dimen/space_s"
-    android:layout_width="match_parent"   
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/space_s">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,6 +21,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
+            <!-- Иконка материала -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -34,9 +35,9 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     android:src="@android:drawable/ic_menu_gallery" />
-
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Тексты -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -59,16 +60,30 @@
                     tools:text="Краткое описание" />
             </LinearLayout>
 
+            <!-- Кнопка настроек (для склада) -->
             <ImageButton
                 android:id="@+id/btnSettings"
                 style="@style/IconButtonStyle.Green"
                 android:src="@drawable/ic_settings" />
-        </LinearLayout>
 
+            <!-- Чекбокс (для выбора) -->
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:background="@android:color/transparent"
+                android:foreground="@null"
+                app:buttonTint="@color/radio_button_tint" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvMaterialTag"
             style="@style/TagStyle.Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_s"
             android:visibility="gone"
             tools:text="# хештег"
