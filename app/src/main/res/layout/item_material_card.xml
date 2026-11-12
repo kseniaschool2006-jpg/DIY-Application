@@ -79,15 +79,16 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvMaterialTag"
-            style="@style/TagStyle.Green"
-            android:layout_width="wrap_content"
+        <!-- Контейнер для нескольких хештегов карточки -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupMaterialTags"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_s"
             android:visibility="gone"
-            tools:text="# хештег"
-            tools:visibility="visible" />
+            app:chipSpacingHorizontal="@dimen/space_xs"
+            app:chipSpacingVertical="@dimen/space_xs"
+            app:singleLine="false" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

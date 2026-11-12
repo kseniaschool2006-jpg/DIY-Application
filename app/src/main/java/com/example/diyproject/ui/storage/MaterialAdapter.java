@@ -1,5 +1,6 @@
 package com.example.diyproject.ui.storage;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.diyproject.R;
+import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,7 +55,7 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
         ImageView ivIcon;
         TextView tvTitle;
         TextView tvDescription;
-        TextView tvTag;
+        ChipGroup chipGroupTags;
         ImageView ivSettings;
         CheckBox checkBox;
 
@@ -62,7 +64,7 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
             ivIcon = itemView.findViewById(R.id.ivMaterialImage);
             tvTitle = itemView.findViewById(R.id.tvMaterialTitle);
             tvDescription = itemView.findViewById(R.id.tvMaterialSubtitle);
-            tvTag = itemView.findViewById(R.id.tvMaterialTag);
+            chipGroupTags = itemView.findViewById(R.id.chipGroupMaterialTags);
             ivSettings = itemView.findViewById(R.id.btnSettings);
             checkBox = itemView.findViewById(R.id.checkBox);
         }
@@ -80,15 +82,29 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MaterialItem item = items.get(position);
 
-        holder.ivIcon.setImageResource(item.getIconRes());
+        if (item.getImageUriString() != null && !item.getImageUriString().isEmpty()) {
+            holder.ivIcon.setImageURI(Uri.parse(item.getImageUriString()));
+        } else {
+            holder.ivIcon.setImageResource(item.getIconRes());
+        }
+
         holder.tvTitle.setText(item.getTitle());
         holder.tvDescription.setText(item.getDescription());
 
-        if (item.getTag() != null && !item.getTag().isEmpty()) {
-            holder.tvTag.setVisibility(View.VISIBLE);
-            holder.tvTag.setText("# " + item.getTag());
+        // Разбор нескольких хештегов
+        List<String> hashtags = parseHashtags(item.getTag());
+        if (!hashtags.isEmpty()) {
+            holder.chipGroupTags.setVisibility(View.VISIBLE);
+            holder.chipGroupTags.removeAllViews();
+
+            for (String tag : hashtags) {
+                TextView tagView = (TextView) LayoutInflater.from(holder.itemView.getContext())
+                        .inflate(R.layout.item_hashtag, holder.chipGroupTags, false);
+                tagView.setText(holder.itemView.getContext().getString(R.string.tag_hash_format, tag));
+                holder.chipGroupTags.addView(tagView);
+            }
         } else {
-            holder.tvTag.setVisibility(View.GONE);
+            holder.chipGroupTags.setVisibility(View.GONE);
         }
 
         if (showSettings) {
@@ -122,6 +138,20 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
         } else {
             holder.checkBox.setVisibility(View.GONE);
         }
+    }
+
+    private List<String> parseHashtags(String tagString) {
+        List<String> tags = new ArrayList<>();
+        if (tagString == null || tagString.trim().isEmpty()) return tags;
+
+        String[] parts = tagString.split("#");
+        for (String p : parts) {
+            String clean = p.trim();
+            if (!clean.isEmpty() && !tags.contains(clean)) {
+                tags.add(clean);
+            }
+        }
+        return tags;
     }
 
     @Override

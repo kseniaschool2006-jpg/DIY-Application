@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.diyproject.R;
@@ -33,6 +34,7 @@ import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,6 +45,9 @@ public class EditMaterialFragment extends Fragment {
     private boolean isUpdatingDescription = false;
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private int currentIconRes = R.drawable.ic_material;
+    private Uri selectedImageUri = null;
+
+    private EditMaterialViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,8 +57,12 @@ public class EditMaterialFragment extends Fragment {
                 new ActivityResultContracts.PickVisualMedia(),
                 uri -> {
                     if (uri != null && getView() != null) {
+                        selectedImageUri = uri;
                         ImageView ivMaterialImage = getView().findViewById(R.id.ivMaterialImage);
                         loadPreview(uri, ivMaterialImage);
+                        if (viewModel != null) {
+                            viewModel.setImageUri(uri);
+                        }
                     }
                 }
         );
@@ -69,9 +78,19 @@ public class EditMaterialFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        viewModel = new ViewModelProvider(this).get(EditMaterialViewModel.class);
+
         setupToolbarForEditScreen(view);
 
-        // Галерея выбора фото
+        ImageView ivMaterialImage = view.findViewById(R.id.ivMaterialImage);
+
+        viewModel.getImageUri().observe(getViewLifecycleOwner(), uri -> {
+            if (uri != null) {
+                selectedImageUri = uri;
+                loadPreview(uri, ivMaterialImage);
+            }
+        });
+
         View frameImagePicker = view.findViewById(R.id.frameImagePicker);
         if (frameImagePicker != null) {
             frameImagePicker.setOnClickListener(v -> {
@@ -81,7 +100,6 @@ public class EditMaterialFragment extends Fragment {
             });
         }
 
-        // Выбор категории
         View cardCategory = view.findViewById(R.id.cardCategory);
         TextView tvCategoryTitle = cardCategory.findViewById(R.id.tvTitle);
         if (tvCategoryTitle != null) {
@@ -96,12 +114,18 @@ public class EditMaterialFragment extends Fragment {
 
         getParentFragmentManager().setFragmentResultListener("themeRequest", getViewLifecycleOwner(), (requestKey, result) -> {
             ArrayList<String> selectedThemes = result.getStringArrayList("selectedThemes");
-            if (selectedThemes != null && !selectedThemes.isEmpty()) {
+            if (selectedThemes != null) {
+                viewModel.setSelectedCategories(selectedThemes);
+            }
+        });
+
+        viewModel.getSelectedCategories().observe(getViewLifecycleOwner(), categories -> {
+            if (categories != null && !categories.isEmpty()) {
                 ChipGroup chipGroup = cardCategory.findViewById(R.id.chipGroup);
                 chipGroup.setVisibility(View.VISIBLE);
                 chipGroup.removeAllViews();
 
-                for (String theme : selectedThemes) {
+                for (String theme : categories) {
                     Chip chip = (Chip) getLayoutInflater().inflate(R.layout.item_chip_category, chipGroup, false);
                     chip.setText(theme);
                     chipGroup.addView(chip);
@@ -113,6 +137,12 @@ public class EditMaterialFragment extends Fragment {
         EditText etTitle = cardTitle.findViewById(R.id.etTitle);
         TextView tvTitleCounter = cardTitle.findViewById(R.id.tvTitleCounter);
 
+        viewModel.getTitle().observe(getViewLifecycleOwner(), text -> {
+            if (text != null && !etTitle.getText().toString().equals(text)) {
+                etTitle.setText(text);
+            }
+        });
+
         etTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -120,6 +150,7 @@ public class EditMaterialFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 tvTitleCounter.setText(s.length() + "/100");
+                viewModel.setTitle(s.toString());
             }
 
             @Override
@@ -130,6 +161,22 @@ public class EditMaterialFragment extends Fragment {
         EditText etDescription = cardDescription.findViewById(R.id.etDescription);
         TextView tvAddHashtag = cardDescription.findViewById(R.id.tvAddHashtag);
         ChipGroup chipGroupTags = cardDescription.findViewById(R.id.chipGroupTags);
+
+        viewModel.getDescription().observe(getViewLifecycleOwner(), text -> {
+            if (text != null && !etDescription.getText().toString().equals(text)) {
+                isUpdatingDescription = true;
+                etDescription.setText(text);
+                isUpdatingDescription = false;
+            }
+        });
+
+        viewModel.getHashtags().observe(getViewLifecycleOwner(), tags -> {
+            if (tags != null) {
+                hashtagSet.clear();
+                hashtagSet.addAll(tags);
+                refreshHashtagChips(chipGroupTags);
+            }
+        });
 
         tvAddHashtag.setOnClickListener(v -> showAddHashtagDialog(chipGroupTags));
 
@@ -143,6 +190,7 @@ public class EditMaterialFragment extends Fragment {
 
                 TextView tvDescCounter = cardDescription.findViewById(R.id.tvDescCounter);
                 tvDescCounter.setText(s.length() + "/400");
+                viewModel.setDescription(s.toString());
 
                 String currentText = s.toString();
                 Pattern pattern = Pattern.compile("#([a-zA-Zа-яА-Я0-9_]+)\\s");
@@ -166,9 +214,10 @@ public class EditMaterialFragment extends Fragment {
                     isUpdatingDescription = true;
                     etDescription.setText(updatedText);
                     etDescription.setSelection(updatedText.length());
+                    viewModel.setDescription(updatedText);
                     isUpdatingDescription = false;
 
-                    refreshHashtagChips(chipGroupTags);
+                    viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
                 }
             }
 
@@ -183,28 +232,37 @@ public class EditMaterialFragment extends Fragment {
             String description = args.getMaterialDescription();
             String tag = args.getMaterialTag();
             int iconRes = args.getMaterialIconRes();
+            String imageUriStr = args.getMaterialImageUriString();
             targetPosition = args.getMaterialPosition();
 
-            if (title != null && !title.isEmpty()) {
+            if (title != null && !title.isEmpty() && (viewModel.getTitle().getValue() == null || viewModel.getTitle().getValue().isEmpty())) {
                 etTitle.setText(title);
+                viewModel.setTitle(title);
             }
-            if (description != null && !description.isEmpty()) {
+            if (description != null && !description.isEmpty() && (viewModel.getDescription().getValue() == null || viewModel.getDescription().getValue().isEmpty())) {
                 etDescription.setText(description);
+                viewModel.setDescription(description);
             }
             if (iconRes != 0) {
                 currentIconRes = iconRes;
-                ImageView ivMaterialImage = view.findViewById(R.id.ivMaterialImage);
-                if (ivMaterialImage != null) {
+                if (ivMaterialImage != null && selectedImageUri == null) {
                     ivMaterialImage.setImageResource(iconRes);
                 }
             }
-            if (tag != null && !tag.isEmpty()) {
-                ChipGroup chipGroup = cardCategory.findViewById(R.id.chipGroup);
-                chipGroup.setVisibility(View.VISIBLE);
-                chipGroup.removeAllViews();
-                Chip chip = (Chip) getLayoutInflater().inflate(R.layout.item_chip_category, chipGroup, false);
-                chip.setText(tag);
-                chipGroup.addView(chip);
+            if (imageUriStr != null && !imageUriStr.isEmpty() && viewModel.getImageUri().getValue() == null) {
+                selectedImageUri = Uri.parse(imageUriStr);
+                viewModel.setImageUri(selectedImageUri);
+            }
+            if (tag != null && !tag.isEmpty() && (viewModel.getHashtags().getValue() == null || viewModel.getHashtags().getValue().isEmpty())) {
+                // Если тег содержит несколько хештегов через пробел
+                String[] tagsArray = tag.split("#|\\s+");
+                for (String t : tagsArray) {
+                    String clean = t.replace("#", "").trim();
+                    if (!clean.isEmpty()) {
+                        hashtagSet.add(clean);
+                    }
+                }
+                viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
             }
         }
 
@@ -215,13 +273,16 @@ public class EditMaterialFragment extends Fragment {
             String updatedDesc = etDescription.getText().toString().trim();
 
             String updatedTag = null;
-            ChipGroup chipGroup = cardCategory.findViewById(R.id.chipGroup);
-            if (chipGroup.getChildCount() > 0) {
-                View child = chipGroup.getChildAt(0);
-                if (child instanceof Chip) {
-                    updatedTag = ((Chip) child).getText().toString();
+            if (!hashtagSet.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (String t : hashtagSet) {
+                    if (sb.length() > 0) sb.append(" #");
+                    sb.append(t);
                 }
+                updatedTag = sb.toString();
             }
+
+            String imageUriString = (selectedImageUri != null) ? selectedImageUri.toString() : null;
 
             Bundle result = new Bundle();
             result.putInt("position", position);
@@ -229,6 +290,7 @@ public class EditMaterialFragment extends Fragment {
             result.putString("description", updatedDesc);
             result.putString("tag", updatedTag);
             result.putInt("iconRes", currentIconRes);
+            result.putString("imageUriString", imageUriString);
 
             getParentFragmentManager().setFragmentResult("editMaterialSaveRequest", result);
             NavHostFragment.findNavController(EditMaterialFragment.this).popBackStack();
@@ -260,7 +322,11 @@ public class EditMaterialFragment extends Fragment {
         String cleanTag = tag.replace("#", "").trim();
         if (!cleanTag.isEmpty()) {
             hashtagSet.add(cleanTag);
-            refreshHashtagChips(chipGroup);
+            if (viewModel != null) {
+                viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
+            } else {
+                refreshHashtagChips(chipGroup);
+            }
         }
     }
 
@@ -275,7 +341,11 @@ public class EditMaterialFragment extends Fragment {
             tagView.setText(getString(R.string.tag_hash_format, tag));
             tagView.setOnClickListener(v -> {
                 hashtagSet.remove(tag);
-                refreshHashtagChips(chipGroup);
+                if (viewModel != null) {
+                    viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
+                } else {
+                    refreshHashtagChips(chipGroup);
+                }
             });
             chipGroup.addView(tagView);
         }

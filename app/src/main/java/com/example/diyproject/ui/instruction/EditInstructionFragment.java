@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,16 +54,22 @@ public class EditInstructionFragment extends Fragment {
 
     private ArrayList<String> selectedMaterialTitles = new ArrayList<>();
     private List<MaterialItem> selectedMaterialItems = new ArrayList<>();
+    private List<InstructionStep> steps = new ArrayList<>();
 
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private InstructionStepAdapter stepAdapter;
     private int pendingImagePosition = -1;
+
+    private EditInstructionViewModel viewModel;
 
     private final ActivityResultLauncher<PickVisualMediaRequest> pickStepImage =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                 if (uri != null && stepAdapter != null && pendingImagePosition != -1) {
                     stepAdapter.setImageForStep(pendingImagePosition, uri);
                     pendingImagePosition = -1;
+                    if (viewModel != null) {
+                        viewModel.setInstructionSteps(steps);
+                    }
                 }
             });
 
@@ -76,6 +83,9 @@ public class EditInstructionFragment extends Fragment {
                     if (uri != null) {
                         ImageView ivInstructionImage = requireView().findViewById(R.id.ivInstructionImage);
                         loadPreview(uri, ivInstructionImage);
+                        if (viewModel != null) {
+                            viewModel.setImageUri(uri);
+                        }
                     }
                 }
         );
@@ -91,15 +101,25 @@ public class EditInstructionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        viewModel = new ViewModelProvider(this).get(EditInstructionViewModel.class);
+
         ImageView ivInstructionImage = view.findViewById(R.id.ivInstructionImage);
 
+        // Подача аргументов с превью картинки при старте
         if (getArguments() != null) {
             String imageUriString = getArguments().getString("instructionImageUri");
-            if (imageUriString != null && !imageUriString.isEmpty()) {
+            if (imageUriString != null && !imageUriString.isEmpty() && !"empty".equals(imageUriString)) {
                 Uri imageUri = Uri.parse(imageUriString);
                 loadPreview(imageUri, ivInstructionImage);
+                viewModel.setImageUri(imageUri);
             }
         }
+
+        viewModel.getImageUri().observe(getViewLifecycleOwner(), uri -> {
+            if (uri != null) {
+                loadPreview(uri, ivInstructionImage);
+            }
+        });
 
         View frameImagePicker = view.findViewById(R.id.frameImagePicker);
         frameImagePicker.setOnClickListener(v -> {
@@ -136,16 +156,17 @@ public class EditInstructionFragment extends Fragment {
 
         ImageButton ivArrow = cardTheme.findViewById(R.id.ivArrow);
         cardTheme.setOnClickListener(v -> openCategorySelection(cardTheme));
-        ivArrow.setOnClickListener(v -> openCategorySelection(cardTheme));
+        if (ivArrow != null) {
+            ivArrow.setOnClickListener(v -> openCategorySelection(cardTheme));
+        }
 
-        getParentFragmentManager().setFragmentResultListener("themeRequest", getViewLifecycleOwner(), (requestKey, result) -> {
-            ArrayList<String> selectedThemes = result.getStringArrayList("selectedThemes");
-            if (selectedThemes != null && !selectedThemes.isEmpty()) {
+        viewModel.getSelectedCategories().observe(getViewLifecycleOwner(), categories -> {
+            if (categories != null && !categories.isEmpty()) {
                 ChipGroup chipGroup = cardTheme.findViewById(R.id.chipGroup);
                 chipGroup.setVisibility(View.VISIBLE);
                 chipGroup.removeAllViews();
 
-                for (String theme : selectedThemes) {
+                for (String theme : categories) {
                     Chip chip = (Chip) getLayoutInflater().inflate(R.layout.item_chip_category, chipGroup, false);
                     chip.setText(theme);
                     chipGroup.addView(chip);
@@ -153,10 +174,26 @@ public class EditInstructionFragment extends Fragment {
             }
         });
 
+        getParentFragmentManager().setFragmentResultListener("themeRequest", getViewLifecycleOwner(), (requestKey, result) -> {
+            ArrayList<String> selectedThemes = result.getStringArrayList("selectedThemes");
+            if (selectedThemes != null) {
+                viewModel.setSelectedCategories(selectedThemes);
+            }
+        });
+
+
+
+
         // Карточка времени
         View cardTimeInclude = view.findViewById(R.id.cardTime);
         View materialCard = cardTimeInclude.findViewById(R.id.cardTimeRoot);
         TextView tvSelectedTime = cardTimeInclude.findViewById(R.id.tvSelectedTime);
+
+        viewModel.getSelectedTime().observe(getViewLifecycleOwner(), time -> {
+            if (time != null && !time.isEmpty()) {
+                tvSelectedTime.setText(time);
+            }
+        });
 
         materialCard.setOnClickListener(v -> {
             ContextThemeWrapper wrapper = new ContextThemeWrapper(requireContext(), R.style.PopupMenuTheme);
@@ -169,17 +206,26 @@ public class EditInstructionFragment extends Fragment {
             popupMenu.getMenu().add("Более 3 часов");
 
             popupMenu.setOnMenuItemClickListener(item -> {
-                tvSelectedTime.setText(item.getTitle());
+                String chosenTime = item.getTitle().toString();
+                viewModel.setSelectedTime(chosenTime);
                 return true;
             });
             popupMenu.show();
         });
+
+
 
         // Редактор названия (100 символов)
         View titleInclude = view.findViewById(R.id.cardTitle);
         if (titleInclude != null) {
             EditText etTitle = titleInclude.findViewById(R.id.etTitle);
             TextView tvTitleCounter = titleInclude.findViewById(R.id.tvTitleCounter);
+
+            viewModel.getTitle().observe(getViewLifecycleOwner(), text -> {
+                if (text != null && !etTitle.getText().toString().equals(text)) {
+                    etTitle.setText(text);
+                }
+            });
 
             etTitle.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -188,6 +234,7 @@ public class EditInstructionFragment extends Fragment {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     tvTitleCounter.setText(s.length() + "/100");
+                    viewModel.setTitle(s.toString());
                 }
 
                 @Override
@@ -195,10 +242,27 @@ public class EditInstructionFragment extends Fragment {
             });
         }
 
+        // Описание (400 символов) и хештеги
         View descInclude = view.findViewById(R.id.cardDescription);
         EditText etDescription = descInclude.findViewById(R.id.etDescription);
         TextView tvAddHashtag = descInclude.findViewById(R.id.tvAddHashtag);
         ChipGroup chipGroupTags = descInclude.findViewById(R.id.chipGroupTags);
+
+        viewModel.getDescription().observe(getViewLifecycleOwner(), text -> {
+            if (text != null && !etDescription.getText().toString().equals(text)) {
+                isUpdatingDescription = true;
+                etDescription.setText(text);
+                isUpdatingDescription = false;
+            }
+        });
+
+        viewModel.getHashtags().observe(getViewLifecycleOwner(), tags -> {
+            if (tags != null) {
+                hashtagSet.clear();
+                hashtagSet.addAll(tags);
+                refreshHashtagChips(chipGroupTags);
+            }
+        });
 
         tvAddHashtag.setOnClickListener(v -> showAddHashtagDialog(chipGroupTags));
 
@@ -210,10 +274,10 @@ public class EditInstructionFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isUpdatingDescription) return;
 
-                TextView tvDescCounter = descInclude.findViewById(R.id.tvDescCounter);
-                tvDescCounter.setText(s.length() + "/400");
-
                 String currentText = s.toString();
+
+                viewModel.setDescription(currentText);
+
                 Pattern pattern = Pattern.compile("#([a-zA-Zа-яА-Я0-9_]+)\\s");
                 Matcher matcher = pattern.matcher(currentText);
 
@@ -228,24 +292,34 @@ public class EditInstructionFragment extends Fragment {
                     matcher.appendReplacement(sb, "");
                 }
 
+                String finalText;
+
                 if (found) {
                     matcher.appendTail(sb);
-                    String updatedText = sb.toString();
+                    finalText = sb.toString();
 
                     isUpdatingDescription = true;
-                    etDescription.setText(updatedText);
-                    etDescription.setSelection(updatedText.length());
+                    etDescription.setText(finalText);
+                    etDescription.setSelection(finalText.length());
+                    viewModel.setDescription(finalText);
                     isUpdatingDescription = false;
 
-                    refreshHashtagChips(chipGroupTags);
+                    viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
                 }
+                else {
+                    finalText = currentText;
+                }
+
+                TextView tvDescCounter = descInclude.findViewById(R.id.tvDescCounter);
+                tvDescCounter.setText(finalText.length() + "/400");
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
-        // Карточка "Выбор материала" внизу
+        // Карточка "Выбор материала"
         View cardSelectMaterial = view.findViewById(R.id.cardSelectMaterial);
         TextView tvMaterialTitle = cardSelectMaterial.findViewById(R.id.tvTitle);
         if (tvMaterialTitle != null) {
@@ -270,7 +344,26 @@ public class EditInstructionFragment extends Fragment {
             ivMaterialArrow.setOnClickListener(openMaterialSelection);
         }
 
-        // Получение результата из экрана выбора материалов
+        viewModel.getSelectedMaterialItems().observe(getViewLifecycleOwner(), materials -> {
+            if (materials != null) {
+                selectedMaterialItems = materials;
+                RecyclerView rvSelectedMaterials = view.findViewById(R.id.rvSelectedMaterials);
+                if (materials.isEmpty()) {
+                    rvSelectedMaterials.setVisibility(View.GONE);
+                } else {
+                    rvSelectedMaterials.setVisibility(View.VISIBLE);
+                    setupSelectedMaterialsAdapter(rvSelectedMaterials);
+                }
+            }
+        });
+
+        viewModel.getSelectedMaterialTitles().observe(getViewLifecycleOwner(), titles -> {
+            if (titles != null) {
+                selectedMaterialTitles = titles;
+            }
+        });
+
+        // Результат из экрана выбора материалов
         getParentFragmentManager().setFragmentResultListener("materialRequest", getViewLifecycleOwner(), (requestKey, result) -> {
             ArrayList<String> selectedTitles = result.getStringArrayList("selectedMaterials");
             @SuppressWarnings("unchecked")
@@ -278,34 +371,26 @@ public class EditInstructionFragment extends Fragment {
 
             if (selectedTitles != null) {
                 selectedMaterialTitles = selectedTitles;
-                RecyclerView rvSelectedMaterials = view.findViewById(R.id.rvSelectedMaterials);
+                viewModel.setSelectedMaterialTitles(selectedTitles);
 
-                if (selectedTitles.isEmpty()) {
-                    rvSelectedMaterials.setVisibility(View.GONE);
-                    selectedMaterialItems.clear();
-                } else {
-                    rvSelectedMaterials.setVisibility(View.VISIBLE);
-
-                    List<MaterialItem> newItems = new ArrayList<>();
-                    for (String title : selectedTitles) {
-                        MaterialItem existing = findMaterialByTitle(selectedMaterialItems, title);
-                        if (existing != null) {
-                            newItems.add(existing);
-                        } else if (selectedList != null) {
-                            MaterialItem fromSelection = findMaterialByTitle(selectedList, title);
-                            if (fromSelection != null) {
-                                newItems.add(fromSelection);
-                            } else {
-                                newItems.add(new MaterialItem(title, "", null, R.drawable.ic_material));
-                            }
+                List<MaterialItem> newItems = new ArrayList<>();
+                for (String title : selectedTitles) {
+                    MaterialItem existing = findMaterialByTitle(selectedMaterialItems, title);
+                    if (existing != null) {
+                        newItems.add(existing);
+                    } else if (selectedList != null) {
+                        MaterialItem fromSelection = findMaterialByTitle(selectedList, title);
+                        if (fromSelection != null) {
+                            newItems.add(fromSelection);
                         } else {
                             newItems.add(new MaterialItem(title, "", null, R.drawable.ic_material));
                         }
+                    } else {
+                        newItems.add(new MaterialItem(title, "", null, R.drawable.ic_material));
                     }
-                    selectedMaterialItems = newItems;
-
-                    setupSelectedMaterialsAdapter(rvSelectedMaterials);
                 }
+                selectedMaterialItems = newItems;
+                viewModel.setSelectedMaterialItems(newItems);
             }
         });
 
@@ -316,6 +401,7 @@ public class EditInstructionFragment extends Fragment {
             String description = result.getString("description");
             String tag = result.getString("tag");
             int iconRes = result.getInt("iconRes", 0);
+            String imageUriString = result.getString("imageUriString");
 
             if (position >= 0 && position < selectedMaterialItems.size()) {
                 MaterialItem oldItem = selectedMaterialItems.get(position);
@@ -323,10 +409,11 @@ public class EditInstructionFragment extends Fragment {
 
                 String newTitle = (title != null && !title.isEmpty()) ? title : oldTitle;
                 String newDesc = (description != null) ? description : oldItem.getDescription();
-                String newTag = (tag != null) ? tag : oldItem.getTag();
+                String newTag = tag;
                 int newIcon = (iconRes != 0) ? iconRes : oldItem.getIconRes();
+                String newImageUri = (imageUriString != null) ? imageUriString : oldItem.getImageUriString();
 
-                MaterialItem updatedItem = new MaterialItem(newTitle, newDesc, newTag, newIcon);
+                MaterialItem updatedItem = new MaterialItem(newTitle, newDesc, newTag, newIcon, newImageUri);
                 selectedMaterialItems.set(position, updatedItem);
 
                 if (!newTitle.equals(oldTitle)) {
@@ -336,8 +423,8 @@ public class EditInstructionFragment extends Fragment {
                     }
                 }
 
-                RecyclerView rvSelectedMaterials = view.findViewById(R.id.rvSelectedMaterials);
-                setupSelectedMaterialsAdapter(rvSelectedMaterials);
+                viewModel.setSelectedMaterialItems(new ArrayList<>(selectedMaterialItems));
+                viewModel.setSelectedMaterialTitles(new ArrayList<>(selectedMaterialTitles));
             }
         });
 
@@ -345,9 +432,32 @@ public class EditInstructionFragment extends Fragment {
         RecyclerView rvInstructionSteps = view.findViewById(R.id.rvInstructionSteps);
         rvInstructionSteps.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        List<InstructionStep> steps = new ArrayList<>();
-        steps.add(new InstructionStep("", null));
+        viewModel.getInstructionSteps().observe(getViewLifecycleOwner(), stepList -> {
+            if (stepList != null) {
+                steps = stepList;
+                if (steps.isEmpty()) {
+                    steps.add(new InstructionStep("", null));
+                }
+                setupStepsAdapter(rvInstructionSteps);
+            }
+        });
 
+        if (viewModel.getInstructionSteps().getValue() == null || viewModel.getInstructionSteps().getValue().isEmpty()) {
+            steps = new ArrayList<>();
+            steps.add(new InstructionStep("", null));
+            viewModel.setInstructionSteps(steps);
+        }
+
+        TextView tvAddStep = view.findViewById(R.id.tvAddStep);
+        tvAddStep.setOnClickListener(v -> {
+            InstructionStep newStep = new InstructionStep("", null);
+            steps.add(newStep);
+            viewModel.setInstructionSteps(steps);
+            rvInstructionSteps.smoothScrollToPosition(steps.size() - 1);
+        });
+    }
+
+    private void setupStepsAdapter(RecyclerView rvInstructionSteps) {
         stepAdapter = new InstructionStepAdapter(steps, position -> {
             pendingImagePosition = position;
             pickStepImage.launch(new PickVisualMediaRequest.Builder()
@@ -355,14 +465,6 @@ public class EditInstructionFragment extends Fragment {
                     .build());
         });
         rvInstructionSteps.setAdapter(stepAdapter);
-
-        TextView tvAddStep = view.findViewById(R.id.tvAddStep);
-        tvAddStep.setOnClickListener(v -> {
-            InstructionStep newStep = new InstructionStep("", null);
-            steps.add(newStep);
-            stepAdapter.notifyItemInserted(steps.size() - 1);
-            rvInstructionSteps.smoothScrollToPosition(steps.size() - 1);
-        });
     }
 
     private void setupSelectedMaterialsAdapter(RecyclerView rvSelectedMaterials) {
@@ -377,6 +479,9 @@ public class EditInstructionFragment extends Fragment {
                         EditInstructionFragmentDirections.actionEditInstructionFragmentToEditMaterialFragment();
                 action.setMaterialTitle(item.getTitle());
                 action.setMaterialDescription(item.getDescription());
+                action.setMaterialTag(item.getTag());
+                action.setMaterialIconRes(item.getIconRes());
+                action.setMaterialImageUriString(item.getImageUriString());
                 action.setMaterialPosition(index);
 
                 NavHostFragment.findNavController(EditInstructionFragment.this).navigate(action);
@@ -401,7 +506,8 @@ public class EditInstructionFragment extends Fragment {
         String cleanTag = tag.replace("#", "").trim();
         if (!cleanTag.isEmpty()) {
             hashtagSet.add(cleanTag);
-            refreshHashtagChips(chipGroup);
+            viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
+
         }
     }
 
@@ -416,7 +522,8 @@ public class EditInstructionFragment extends Fragment {
             tagView.setText(getString(R.string.tag_hash_format, tag));
             tagView.setOnClickListener(v -> {
                 hashtagSet.remove(tag);
-                refreshHashtagChips(chipGroup);
+                viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
+
             });
             chipGroup.addView(tagView);
         }
