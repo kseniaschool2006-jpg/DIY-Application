@@ -22,6 +22,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.diyproject.R;
@@ -270,7 +272,13 @@ public class EditMaterialFragment extends Fragment {
             result.putString("imageUriString", imageUriString);
 
             getParentFragmentManager().setFragmentResult("editMaterialSaveRequest", result);
-            NavHostFragment.findNavController(EditMaterialFragment.this).popBackStack();
+
+            NavController navController = NavHostFragment.findNavController(EditMaterialFragment.this);
+            if (!navController.popBackStack(R.id.storageFragmentMain, false)) {
+                NavDirections action =
+                        EditMaterialFragmentDirections.actionEditMaterialFragmentToStorageFragmentMain();
+                navController.navigate(action);
+            }
         });
     }
 

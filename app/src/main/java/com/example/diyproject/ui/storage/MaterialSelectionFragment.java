@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -23,6 +24,9 @@ public class MaterialSelectionFragment extends Fragment {
 
     private MaterialAdapter adapter;
     private FragmentMaterialSelectionBinding binding;
+    private String screenTitle = "Выбор материалов";
+    private boolean showSettings = false;
+    private boolean showCheckBox = true;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -35,8 +39,6 @@ public class MaterialSelectionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupToolbar();
-
         ArrayList<String> preSelected = new ArrayList<>();
         if (getArguments() != null) {
             MaterialSelectionFragmentArgs args = MaterialSelectionFragmentArgs.fromBundle(getArguments());
@@ -44,7 +46,14 @@ public class MaterialSelectionFragment extends Fragment {
             if (preSelectedArray != null) {
                 Collections.addAll(preSelected, preSelectedArray);
             }
+            if (args.getScreenTitle() != null) {
+                screenTitle = args.getScreenTitle();
+            }
+            showSettings = args.getShowSettings();
+            showCheckBox = args.getShowCheckBox();
         }
+
+        setupToolbar();
 
         List<MaterialItem> materials = new ArrayList<>();
         materials.add(new MaterialItem("Пряжа", "Зеленая, 4мм", null, R.drawable.ic_material));
@@ -55,38 +64,64 @@ public class MaterialSelectionFragment extends Fragment {
 
         binding.recyclerViewMaterials.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        adapter = new MaterialAdapter(materials, false, true, preSelected, new MaterialAdapter.OnMaterialClickListener() {
+        adapter = new MaterialAdapter(materials, showSettings, showCheckBox, preSelected, new MaterialAdapter.OnMaterialClickListener() {
             @Override
-            public void onCardClick(MaterialItem item) {}
+            public void onCardClick(MaterialItem item) {
+                if (showSettings) {
+                    Bundle result = new Bundle();
+                    result.putSerializable("materialItem", item);
+                    getParentFragmentManager().setFragmentResult("addMaterialToStorage", result);
+
+                    NavController navController = NavHostFragment.findNavController(MaterialSelectionFragment.this);
+                    if (!navController.popBackStack(R.id.storageFragmentMain, false)) {
+                        navController.navigate(R.id.action_materialSelectionFragment_to_storageFragmentMain);
+                    }
+                }
+            }
 
             @Override
-            public void onSettingsClick(MaterialItem item) {}
+            public void onSettingsClick(MaterialItem item) {
+                MaterialSelectionFragmentDirections.ActionMaterialSelectionFragmentToEditMaterialFragment action =
+                        MaterialSelectionFragmentDirections.actionMaterialSelectionFragmentToEditMaterialFragment();
+                action.setMaterialTitle(item.getTitle());
+                action.setMaterialDescription(item.getDescription());
+                action.setMaterialTag(item.getTag());
+                action.setMaterialIconRes(item.getIconRes());
+                action.setMaterialImageUriString(item.getImageUriString());
+
+                NavHostFragment.findNavController(MaterialSelectionFragment.this).navigate(action);
+            }
         });
         binding.recyclerViewMaterials.setAdapter(adapter);
 
-        binding.btnSelect.setOnClickListener(v -> {
-            List<MaterialItem> selected = adapter.getSelectedItems();
-            if (!selected.isEmpty()) {
-                ArrayList<String> titles = new ArrayList<>();
-                ArrayList<MaterialItem> selectedList = new ArrayList<>(selected);
-                for (MaterialItem m : selected) {
-                    titles.add(m.getTitle());
+        if (!showCheckBox) {
+            binding.btnSelect.setVisibility(View.GONE);
+        } else {
+            binding.btnSelect.setVisibility(View.VISIBLE);
+            binding.btnSelect.setOnClickListener(v -> {
+                List<MaterialItem> selected = adapter.getSelectedItems();
+                if (!selected.isEmpty()) {
+                    ArrayList<String> titles = new ArrayList<>();
+                    ArrayList<MaterialItem> selectedList = new ArrayList<>(selected);
+                    for (MaterialItem m : selected) {
+                        titles.add(m.getTitle());
+                    }
+
+                    Bundle result = new Bundle();
+                    result.putStringArrayList("selectedMaterials", titles);
+                    result.putSerializable("selectedMaterialsList", selectedList);
+                    getParentFragmentManager().setFragmentResult("materialRequest", result);
+
+                    NavHostFragment.findNavController(MaterialSelectionFragment.this).popBackStack();
+                } else {
+                    Toast.makeText(requireContext(), "Выберите хотя бы один материал", Toast.LENGTH_SHORT).show();
                 }
-
-                Bundle result = new Bundle();
-                result.putStringArrayList("selectedMaterials", titles);
-                result.putSerializable("selectedMaterialsList", selectedList);
-                getParentFragmentManager().setFragmentResult("materialRequest", result);
-
-                NavHostFragment.findNavController(MaterialSelectionFragment.this).popBackStack();
-            } else {
-                Toast.makeText(requireContext(), "Выберите хотя бы один материал", Toast.LENGTH_SHORT).show();
-            }
-        });
+            });
+        }
     }
 
     private void setupToolbar() {
-        binding.customToolbar.tvToolbarTitle.setText("Выбор материалов");
+        binding.customToolbar.tvToolbarTitle.setText(screenTitle);
         binding.customToolbar.btnLeftAction.setImageResource(R.drawable.ic_arrow_back);
         binding.customToolbar.btnLeftAction.setOnClickListener(v -> {
             NavHostFragment.findNavController(this).popBackStack();

@@ -25,6 +25,7 @@ public class ToCheckFragment extends Fragment {
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
     private FragmentToCheckBinding binding;
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

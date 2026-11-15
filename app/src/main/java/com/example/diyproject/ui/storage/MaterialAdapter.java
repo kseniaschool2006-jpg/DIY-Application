@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -87,7 +89,7 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
             for (String tag : hashtags) {
                 TextView tagView = (TextView) LayoutInflater.from(holder.itemView.getContext())
                         .inflate(R.layout.item_hashtag, holder.binding.chipGroupMaterialTags, false);
-                tagView.setText("# " + tag);
+                tagView.setText(holder.itemView.getContext().getString(R.string.tag_hash_format, tag));
                 holder.binding.chipGroupMaterialTags.addView(tagView);
             }
         } else {
@@ -103,12 +105,6 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
             });
         } else {
             holder.binding.btnSettings.setVisibility(View.GONE);
-
-            holder.itemView.setOnClickListener(v -> {
-                if (clickListener != null) {
-                    clickListener.onCardClick(item);
-                }
-            });
         }
 
         if (showCheckBox) {
@@ -124,6 +120,11 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
             });
         } else {
             holder.binding.checkBox.setVisibility(View.GONE);
+            holder.itemView.setOnClickListener(v -> {
+                if (clickListener != null) {
+                    clickListener.onCardClick(item);
+                }
+            });
         }
     }
 

@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_storageFragmentMain_to_newMaterialFragment1"
             app:destination="@id/newMaterialFragment1" />
+        <action
+            android:id="@+id/action_storageFragmentMain_to_editMaterialFragment"
+            app:destination="@id/editMaterialFragment" />
     </fragment>
     <fragment
         android:id="@+id/newMaterialFragment1"
@@ -21,6 +24,15 @@
         <action
             android:id="@+id/action_newMaterialFragment1_to_newMaterialFragment2"
             app:destination="@id/newMaterialFragment2" />
+        <action
+            android:id="@+id/action_newMaterialFragment1_to_editMaterialFragment"
+            app:destination="@id/editMaterialFragment" />
+        <action
+            android:id="@+id/action_newMaterialFragment1_to_materialSelectionFragment"
+            app:destination="@id/materialSelectionFragment" />
+        <action
+            android:id="@+id/action_newMaterialFragment1_to_storageFragmentMain"
+            app:destination="@id/storageFragmentMain" />
     </fragment>
     <fragment
         android:id="@+id/newMaterialFragment2"
@@ -78,6 +90,9 @@
         <action
             android:id="@+id/action_editMaterialFragment_to_categorySelectionFragment"
             app:destination="@id/categorySelectionFragment" />
+        <action
+            android:id="@+id/action_editMaterialFragment_to_storageFragmentMain"
+            app:destination="@id/storageFragmentMain" />
     </fragment>
     <fragment
         android:id="@+id/editInstructionFragment"
@@ -121,5 +136,24 @@
             app:argType="string[]"
             app:nullable="true"
             android:defaultValue="@null" />
+        <argument
+            android:name="screenTitle"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="Выбор материалов" />
+        <argument
+            android:name="showSettings"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="showCheckBox"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <action
+            android:id="@+id/action_materialSelectionFragment_to_editMaterialFragment"
+            app:destination="@id/editMaterialFragment" />
+        <action
+            android:id="@+id/action_materialSelectionFragment_to_storageFragmentMain"
+            app:destination="@id/storageFragmentMain" />
     </fragment>
 </navigation>

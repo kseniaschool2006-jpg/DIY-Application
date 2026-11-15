@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,6 +23,8 @@ import java.util.List;
 public class StorageFragmentMain extends Fragment {
 
     private FragmentStorageMainBinding binding;
+    private MaterialAdapter adapter;
+    private StorageViewModel viewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -34,9 +37,47 @@ public class StorageFragmentMain extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Инициализируем ViewModel на уровне Activity, чтобы данные сохранялись между переходами
+        viewModel = new ViewModelProvider(requireActivity()).get(StorageViewModel.class);
+
         List<String> categories = loadCategoriesFromDatabase();
         setupTabs(categories);
         setupRecyclerView();
+
+        // Слушатель добавления материала из библиотеки или выбора
+        getParentFragmentManager().setFragmentResultListener("addMaterialToStorage", getViewLifecycleOwner(), (requestKey, result) -> {
+            MaterialItem newItem = (MaterialItem) result.getSerializable("materialItem");
+            if (newItem != null) {
+                viewModel.addMaterial(newItem);
+            }
+        });
+
+        // Слушатель сохранения/редактирования материала из EditMaterialFragment
+        getParentFragmentManager().setFragmentResultListener("editMaterialSaveRequest", getViewLifecycleOwner(), (requestKey, result) -> {
+            int position = result.getInt("position", -1);
+            String title = result.getString("title");
+            String description = result.getString("description");
+            String tag = result.getString("tag");
+            int iconRes = result.getInt("iconRes", 0);
+            String imageUriString = result.getString("imageUriString");
+
+            List<MaterialItem> currentList = viewModel.getMaterials().getValue();
+            if (currentList != null && position >= 0 && position < currentList.size()) {
+                MaterialItem oldItem = currentList.get(position);
+                String newTitle = (title != null && !title.isEmpty()) ? title : oldItem.getTitle();
+                String newDesc = (description != null) ? description : oldItem.getDescription();
+                String newTag = tag;
+                int newIcon = (iconRes != 0) ? iconRes : oldItem.getIconRes();
+                String newImageUri = (imageUriString != null) ? imageUriString : oldItem.getImageUriString();
+
+                MaterialItem updatedItem = new MaterialItem(newTitle, newDesc, newTag, newIcon, newImageUri);
+                viewModel.updateMaterial(position, updatedItem);
+            } else if (title != null && !title.isEmpty()) {
+                int newIcon = (iconRes != 0) ? iconRes : R.drawable.ic_material;
+                MaterialItem newItem = new MaterialItem(title, description != null ? description : "", tag, newIcon, imageUriString);
+                viewModel.addMaterial(newItem);
+            }
+        });
 
         binding.fabMain.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(StorageFragmentMain.this);
@@ -77,21 +118,40 @@ public class StorageFragmentMain extends Fragment {
     }
 
     private void setupRecyclerView() {
-        List<MaterialItem> materials = new ArrayList<>();
-        materials.add(new MaterialItem("Материал", "Краткое описание", null, R.drawable.ic_material));
-        materials.add(new MaterialItem("Гвозди", "5см, тонкие", "мелкий ремонт", R.drawable.ic_material));
-        materials.add(new MaterialItem("Пряжа", "Зеленая пряжа", "новогодние игрушки", R.drawable.ic_material));
-
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        MaterialAdapter adapter = new MaterialAdapter(materials, true, false, new MaterialAdapter.OnMaterialClickListener() {
-            @Override
-            public void onCardClick(MaterialItem item) {}
 
-            @Override
-            public void onSettingsClick(MaterialItem item) {}
+        if (viewModel.getMaterials().getValue() == null || viewModel.getMaterials().getValue().isEmpty()) {
+            List<MaterialItem> initial = new ArrayList<>();
+            initial.add(new MaterialItem("Материал", "Краткое описание", null, R.drawable.ic_material));
+            initial.add(new MaterialItem("Гвозди", "5см, тонкие", "мелкийремонт", R.drawable.ic_material));
+            initial.add(new MaterialItem("Пряжа", "Зеленая пряжа", "новогодниеигрушки", R.drawable.ic_material));
+            viewModel.setMaterials(initial);
+        }
+
+        viewModel.getMaterials().observe(getViewLifecycleOwner(), materials -> {
+            if (materials != null) {
+                adapter = new MaterialAdapter(materials, true, false, new MaterialAdapter.OnMaterialClickListener() {
+                    @Override
+                    public void onCardClick(MaterialItem item) {}
+
+                    @Override
+                    public void onSettingsClick(MaterialItem item) {
+                        int index = materials.indexOf(item);
+                        StorageFragmentMainDirections.ActionStorageFragmentMainToEditMaterialFragment action =
+                                StorageFragmentMainDirections.actionStorageFragmentMainToEditMaterialFragment();
+                        action.setMaterialTitle(item.getTitle());
+                        action.setMaterialDescription(item.getDescription());
+                        action.setMaterialTag(item.getTag());
+                        action.setMaterialIconRes(item.getIconRes());
+                        action.setMaterialImageUriString(item.getImageUriString());
+                        action.setMaterialPosition(index);
+
+                        NavHostFragment.findNavController(StorageFragmentMain.this).navigate(action);
+                    }
+                });
+                binding.recyclerView.setAdapter(adapter);
+            }
         });
-
-        binding.recyclerView.setAdapter(adapter);
     }
 
     @Override
