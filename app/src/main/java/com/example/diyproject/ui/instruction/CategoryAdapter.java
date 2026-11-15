@@ -1,16 +1,14 @@
 package com.example.diyproject.ui.instruction;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.diyproject.R;
+import com.example.diyproject.databinding.ItemCategoryChoiceBinding;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,30 +32,27 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName;
-        CheckBox checkBox;
+        ItemCategoryChoiceBinding binding;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvName = itemView.findViewById(R.id.tvCategoryName);
-            checkBox = itemView.findViewById(R.id.checkBox);
+        public ViewHolder(@NonNull ItemCategoryChoiceBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_category_choice, parent, false);
-        return new ViewHolder(view);
+        ItemCategoryChoiceBinding binding = ItemCategoryChoiceBinding.inflate(
+                LayoutInflater.from(parent.getContext()), parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String category = categories.get(position);
-        holder.tvName.setText(category);
-
-        holder.checkBox.setChecked(selectedPositions.contains(position));
+        holder.binding.tvCategoryName.setText(category);
+        holder.binding.checkBox.setChecked(selectedPositions.contains(position));
 
         holder.itemView.setOnClickListener(v -> {
             if (selectedPositions.contains(position)) {
@@ -74,8 +69,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         return categories.size();
     }
 
-    public java.util.List<String> getSelectedCategories() {
-        java.util.List<String> selected = new java.util.ArrayList<>();
+    public List<String> getSelectedCategories() {
+        List<String> selected = new ArrayList<>();
         for (Integer pos : selectedPositions) {
             selected.add(categories.get(pos));
         }

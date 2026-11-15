@@ -177,7 +177,7 @@
                     android:id="@+id/switchComments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
+                    android:checked="false"
                     app:thumbTint="@color/switch_thumb_tint"
                     app:trackTint="@color/switch_track_tint" />
             </LinearLayout>

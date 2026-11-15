@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,9 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.diyproject.R;
+import com.example.diyproject.databinding.FragmentMaterialSelectionBinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,18 +22,20 @@ import java.util.List;
 public class MaterialSelectionFragment extends Fragment {
 
     private MaterialAdapter adapter;
+    private FragmentMaterialSelectionBinding binding;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_material_selection, container, false);
+        binding = FragmentMaterialSelectionBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupToolbar(view);
+        setupToolbar();
 
         ArrayList<String> preSelected = new ArrayList<>();
         if (getArguments() != null) {
@@ -54,8 +53,7 @@ public class MaterialSelectionFragment extends Fragment {
         materials.add(new MaterialItem("Бисер", "Мелкий, красный", null, R.drawable.ic_material));
         materials.add(new MaterialItem("Крючок", "3мм", null, R.drawable.ic_material));
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewMaterials);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.recyclerViewMaterials.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         adapter = new MaterialAdapter(materials, false, true, preSelected, new MaterialAdapter.OnMaterialClickListener() {
             @Override
@@ -64,10 +62,9 @@ public class MaterialSelectionFragment extends Fragment {
             @Override
             public void onSettingsClick(MaterialItem item) {}
         });
-        recyclerView.setAdapter(adapter);
+        binding.recyclerViewMaterials.setAdapter(adapter);
 
-        Button btnSelect = view.findViewById(R.id.btnSelect);
-        btnSelect.setOnClickListener(v -> {
+        binding.btnSelect.setOnClickListener(v -> {
             List<MaterialItem> selected = adapter.getSelectedItems();
             if (!selected.isEmpty()) {
                 ArrayList<String> titles = new ArrayList<>();
@@ -88,17 +85,18 @@ public class MaterialSelectionFragment extends Fragment {
         });
     }
 
-    private void setupToolbar(View view) {
-        View toolbar = view.findViewById(R.id.customToolbar);
-        ImageButton btnLeft = toolbar.findViewById(R.id.btnLeftAction);
-        TextView tvTitle = toolbar.findViewById(R.id.tvToolbarTitle);
-        ImageButton btnRight = toolbar.findViewById(R.id.btnRightAction);
-
-        tvTitle.setText("Выбор материалов");
-        btnLeft.setImageResource(R.drawable.ic_arrow_back);
-        btnLeft.setOnClickListener(v -> {
+    private void setupToolbar() {
+        binding.customToolbar.tvToolbarTitle.setText("Выбор материалов");
+        binding.customToolbar.btnLeftAction.setImageResource(R.drawable.ic_arrow_back);
+        binding.customToolbar.btnLeftAction.setOnClickListener(v -> {
             NavHostFragment.findNavController(this).popBackStack();
         });
-        btnRight.setVisibility(View.GONE);
+        binding.customToolbar.btnRightAction.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

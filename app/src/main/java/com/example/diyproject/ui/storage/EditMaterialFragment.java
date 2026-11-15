@@ -10,10 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +25,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.diyproject.R;
+import com.example.diyproject.databinding.DialogAddHashtagBinding;
+import com.example.diyproject.databinding.FragmentEditMaterialBinding;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -48,6 +46,7 @@ public class EditMaterialFragment extends Fragment {
     private Uri selectedImageUri = null;
 
     private EditMaterialViewModel viewModel;
+    private FragmentEditMaterialBinding binding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,10 +55,9 @@ public class EditMaterialFragment extends Fragment {
         pickMedia = registerForActivityResult(
                 new ActivityResultContracts.PickVisualMedia(),
                 uri -> {
-                    if (uri != null && getView() != null) {
+                    if (uri != null && binding != null) {
                         selectedImageUri = uri;
-                        ImageView ivMaterialImage = getView().findViewById(R.id.ivMaterialImage);
-                        loadPreview(uri, ivMaterialImage);
+                        loadPreview(uri, binding.ivMaterialImage);
                         if (viewModel != null) {
                             viewModel.setImageUri(uri);
                         }
@@ -69,9 +67,10 @@ public class EditMaterialFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_edit_material, container, false);
+        binding = FragmentEditMaterialBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -80,37 +79,26 @@ public class EditMaterialFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(EditMaterialViewModel.class);
 
-        setupToolbarForEditScreen(view);
-
-        ImageView ivMaterialImage = view.findViewById(R.id.ivMaterialImage);
+        setupToolbarForEditScreen();
 
         viewModel.getImageUri().observe(getViewLifecycleOwner(), uri -> {
             if (uri != null) {
                 selectedImageUri = uri;
-                loadPreview(uri, ivMaterialImage);
+                loadPreview(uri, binding.ivMaterialImage);
             }
         });
 
-        View frameImagePicker = view.findViewById(R.id.frameImagePicker);
-        if (frameImagePicker != null) {
-            frameImagePicker.setOnClickListener(v -> {
-                pickMedia.launch(new PickVisualMediaRequest.Builder()
-                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
-                        .build());
-            });
-        }
+        binding.frameImagePicker.setOnClickListener(v -> {
+            pickMedia.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
+                    .build());
+        });
 
-        View cardCategory = view.findViewById(R.id.cardCategory);
-        TextView tvCategoryTitle = cardCategory.findViewById(R.id.tvTitle);
-        if (tvCategoryTitle != null) {
-            tvCategoryTitle.setText("Выбор категории");
-        }
-
-        ImageButton ivArrow = cardCategory.findViewById(R.id.ivArrow);
-        cardCategory.setOnClickListener(v -> openCategorySelection(cardCategory));
-        if (ivArrow != null) {
-            ivArrow.setOnClickListener(v -> openCategorySelection(cardCategory));
-        }
+        // Выбор категории
+        binding.cardCategory.tvTitle.setText("Выбор категории");
+        View.OnClickListener openCategory = v -> openCategorySelection();
+        binding.cardCategory.getRoot().setOnClickListener(openCategory);
+        binding.cardCategory.ivArrow.setOnClickListener(openCategory);
 
         getParentFragmentManager().setFragmentResultListener("themeRequest", getViewLifecycleOwner(), (requestKey, result) -> {
             ArrayList<String> selectedThemes = result.getStringArrayList("selectedThemes");
@@ -121,35 +109,31 @@ public class EditMaterialFragment extends Fragment {
 
         viewModel.getSelectedCategories().observe(getViewLifecycleOwner(), categories -> {
             if (categories != null && !categories.isEmpty()) {
-                ChipGroup chipGroup = cardCategory.findViewById(R.id.chipGroup);
-                chipGroup.setVisibility(View.VISIBLE);
-                chipGroup.removeAllViews();
+                binding.cardCategory.chipGroup.setVisibility(View.VISIBLE);
+                binding.cardCategory.chipGroup.removeAllViews();
 
                 for (String theme : categories) {
-                    Chip chip = (Chip) getLayoutInflater().inflate(R.layout.item_chip_category, chipGroup, false);
+                    Chip chip = (Chip) getLayoutInflater().inflate(R.layout.item_chip_category, binding.cardCategory.chipGroup, false);
                     chip.setText(theme);
-                    chipGroup.addView(chip);
+                    binding.cardCategory.chipGroup.addView(chip);
                 }
             }
         });
 
-        View cardTitle = view.findViewById(R.id.cardTitle);
-        EditText etTitle = cardTitle.findViewById(R.id.etTitle);
-        TextView tvTitleCounter = cardTitle.findViewById(R.id.tvTitleCounter);
-
+        // Название со счетчиком символов (100)
         viewModel.getTitle().observe(getViewLifecycleOwner(), text -> {
-            if (text != null && !etTitle.getText().toString().equals(text)) {
-                etTitle.setText(text);
+            if (text != null && !binding.cardTitle.etTitle.getText().toString().equals(text)) {
+                binding.cardTitle.etTitle.setText(text);
             }
         });
 
-        etTitle.addTextChangedListener(new TextWatcher() {
+        binding.cardTitle.etTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                tvTitleCounter.setText(s.length() + "/100");
+                binding.cardTitle.tvTitleCounter.setText(s.length() + "/100");
                 viewModel.setTitle(s.toString());
             }
 
@@ -157,15 +141,11 @@ public class EditMaterialFragment extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
 
-        View cardDescription = view.findViewById(R.id.cardDescription);
-        EditText etDescription = cardDescription.findViewById(R.id.etDescription);
-        TextView tvAddHashtag = cardDescription.findViewById(R.id.tvAddHashtag);
-        ChipGroup chipGroupTags = cardDescription.findViewById(R.id.chipGroupTags);
-
+        // Описание со счетчиком символов (400) и хештегами
         viewModel.getDescription().observe(getViewLifecycleOwner(), text -> {
-            if (text != null && !etDescription.getText().toString().equals(text)) {
+            if (text != null && !binding.cardDescription.etDescription.getText().toString().equals(text)) {
                 isUpdatingDescription = true;
-                etDescription.setText(text);
+                binding.cardDescription.etDescription.setText(text);
                 isUpdatingDescription = false;
             }
         });
@@ -174,13 +154,13 @@ public class EditMaterialFragment extends Fragment {
             if (tags != null) {
                 hashtagSet.clear();
                 hashtagSet.addAll(tags);
-                refreshHashtagChips(chipGroupTags);
+                refreshHashtagChips(binding.cardDescription.chipGroupTags);
             }
         });
 
-        tvAddHashtag.setOnClickListener(v -> showAddHashtagDialog(chipGroupTags));
+        binding.cardDescription.tvAddHashtag.setOnClickListener(v -> showAddHashtagDialog(binding.cardDescription.chipGroupTags));
 
-        etDescription.addTextChangedListener(new TextWatcher() {
+        binding.cardDescription.etDescription.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -188,8 +168,7 @@ public class EditMaterialFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isUpdatingDescription) return;
 
-                TextView tvDescCounter = cardDescription.findViewById(R.id.tvDescCounter);
-                tvDescCounter.setText(s.length() + "/400");
+                binding.cardDescription.tvDescCounter.setText(s.length() + "/400");
                 viewModel.setDescription(s.toString());
 
                 String currentText = s.toString();
@@ -212,8 +191,8 @@ public class EditMaterialFragment extends Fragment {
                     String updatedText = sb.toString();
 
                     isUpdatingDescription = true;
-                    etDescription.setText(updatedText);
-                    etDescription.setSelection(updatedText.length());
+                    binding.cardDescription.etDescription.setText(updatedText);
+                    binding.cardDescription.etDescription.setSelection(updatedText.length());
                     viewModel.setDescription(updatedText);
                     isUpdatingDescription = false;
 
@@ -236,17 +215,17 @@ public class EditMaterialFragment extends Fragment {
             targetPosition = args.getMaterialPosition();
 
             if (title != null && !title.isEmpty() && (viewModel.getTitle().getValue() == null || viewModel.getTitle().getValue().isEmpty())) {
-                etTitle.setText(title);
+                binding.cardTitle.etTitle.setText(title);
                 viewModel.setTitle(title);
             }
             if (description != null && !description.isEmpty() && (viewModel.getDescription().getValue() == null || viewModel.getDescription().getValue().isEmpty())) {
-                etDescription.setText(description);
+                binding.cardDescription.etDescription.setText(description);
                 viewModel.setDescription(description);
             }
             if (iconRes != 0) {
                 currentIconRes = iconRes;
-                if (ivMaterialImage != null && selectedImageUri == null) {
-                    ivMaterialImage.setImageResource(iconRes);
+                if (selectedImageUri == null) {
+                    binding.ivMaterialImage.setImageResource(iconRes);
                 }
             }
             if (imageUriStr != null && !imageUriStr.isEmpty() && viewModel.getImageUri().getValue() == null) {
@@ -254,7 +233,6 @@ public class EditMaterialFragment extends Fragment {
                 viewModel.setImageUri(selectedImageUri);
             }
             if (tag != null && !tag.isEmpty() && (viewModel.getHashtags().getValue() == null || viewModel.getHashtags().getValue().isEmpty())) {
-                // Если тег содержит несколько хештегов через пробел
                 String[] tagsArray = tag.split("#|\\s+");
                 for (String t : tagsArray) {
                     String clean = t.replace("#", "").trim();
@@ -267,10 +245,9 @@ public class EditMaterialFragment extends Fragment {
         }
 
         final int position = targetPosition;
-        Button btnSave = view.findViewById(R.id.btnSave);
-        btnSave.setOnClickListener(v -> {
-            String updatedTitle = etTitle.getText().toString().trim();
-            String updatedDesc = etDescription.getText().toString().trim();
+        binding.btnSave.setOnClickListener(v -> {
+            String updatedTitle = binding.cardTitle.etTitle.getText().toString().trim();
+            String updatedDesc = binding.cardDescription.etDescription.getText().toString().trim();
 
             String updatedTag = null;
             if (!hashtagSet.isEmpty()) {
@@ -297,11 +274,10 @@ public class EditMaterialFragment extends Fragment {
         });
     }
 
-    private void openCategorySelection(View cardCategory) {
-        ChipGroup chipGroup = cardCategory.findViewById(R.id.chipGroup);
+    private void openCategorySelection() {
         ArrayList<String> currentThemes = new ArrayList<>();
-        for (int i = 0; i < chipGroup.getChildCount(); i++) {
-            Chip chip = (Chip) chipGroup.getChildAt(i);
+        for (int i = 0; i < binding.cardCategory.chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) binding.cardCategory.chipGroup.getChildAt(i);
             currentThemes.add(chip.getText().toString());
         }
 
@@ -353,8 +329,8 @@ public class EditMaterialFragment extends Fragment {
 
     private void showAddHashtagDialog(ChipGroup chipGroupTags) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_hashtag, null);
-        builder.setView(dialogView);
+        DialogAddHashtagBinding dialogBinding = DialogAddHashtagBinding.inflate(getLayoutInflater());
+        builder.setView(dialogBinding.getRoot());
 
         AlertDialog dialog = builder.create();
         if (dialog.getWindow() != null) {
@@ -362,23 +338,20 @@ public class EditMaterialFragment extends Fragment {
         }
         dialog.show();
 
-        AutoCompleteTextView etNewTag = dialogView.findViewById(R.id.etNewTag);
-        Button btnAddTag = dialogView.findViewById(R.id.btnAddTag);
-
         String[] popularTags = {"вязание", "ремонт", "игрушки", "пряжа", "шитье", "реставрация", "поделки", "новогодние"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
                 R.layout.item_dropdown_tag, popularTags);
-        etNewTag.setAdapter(adapter);
+        dialogBinding.etNewTag.setAdapter(adapter);
 
-        etNewTag.setOnItemClickListener((parent, view, position, id) -> {
+        dialogBinding.etNewTag.setOnItemClickListener((parent, view, position, id) -> {
             String selectedTag = (String) parent.getItemAtPosition(position);
-            etNewTag.setText(selectedTag);
-            etNewTag.setSelection(selectedTag.length());
+            dialogBinding.etNewTag.setText(selectedTag);
+            dialogBinding.etNewTag.setSelection(selectedTag.length());
         });
 
-        btnAddTag.setOnClickListener(v -> {
-            String newTag = etNewTag.getText().toString().trim();
+        dialogBinding.btnAddTag.setOnClickListener(v -> {
+            String newTag = dialogBinding.etNewTag.getText().toString().trim();
             if (!newTag.isEmpty()) {
                 addHashtag(newTag, chipGroupTags);
                 dialog.dismiss();
@@ -412,21 +385,20 @@ public class EditMaterialFragment extends Fragment {
         }
     }
 
-    private void setupToolbarForEditScreen(View view) {
-        View toolbar = view.findViewById(R.id.customToolbar);
-        ImageButton btnLeft = toolbar.findViewById(R.id.btnLeftAction);
-        ImageButton btnRight = toolbar.findViewById(R.id.btnRightAction);
-        TextView tvTitle = toolbar.findViewById(R.id.tvToolbarTitle);
+    private void setupToolbarForEditScreen() {
+        binding.customToolbar.tvToolbarTitle.setText("Редактировать материал");
 
-        tvTitle.setText("Редактировать материал");
-
-        btnLeft.setImageResource(R.drawable.ic_arrow_back);
-        btnLeft.setOnClickListener(v -> {
+        binding.customToolbar.btnLeftAction.setImageResource(R.drawable.ic_arrow_back);
+        binding.customToolbar.btnLeftAction.setOnClickListener(v -> {
             requireActivity().getOnBackPressedDispatcher().onBackPressed();
         });
 
-        if (btnRight != null) {
-            btnRight.setVisibility(View.GONE);
-        }
+        binding.customToolbar.btnRightAction.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

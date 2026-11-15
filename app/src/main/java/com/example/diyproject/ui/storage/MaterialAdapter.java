@@ -4,15 +4,13 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.diyproject.R;
-import com.google.android.material.chip.ChipGroup;
+import com.example.diyproject.databinding.ItemMaterialCardBinding;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -52,30 +50,20 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivIcon;
-        TextView tvTitle;
-        TextView tvDescription;
-        ChipGroup chipGroupTags;
-        ImageView ivSettings;
-        CheckBox checkBox;
+        ItemMaterialCardBinding binding;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ivIcon = itemView.findViewById(R.id.ivMaterialImage);
-            tvTitle = itemView.findViewById(R.id.tvMaterialTitle);
-            tvDescription = itemView.findViewById(R.id.tvMaterialSubtitle);
-            chipGroupTags = itemView.findViewById(R.id.chipGroupMaterialTags);
-            ivSettings = itemView.findViewById(R.id.btnSettings);
-            checkBox = itemView.findViewById(R.id.checkBox);
+        public ViewHolder(@NonNull ItemMaterialCardBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_material_card, parent, false);
-        return new ViewHolder(view);
+        ItemMaterialCardBinding binding = ItemMaterialCardBinding.inflate(
+                LayoutInflater.from(parent.getContext()), parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
@@ -83,39 +71,38 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
         MaterialItem item = items.get(position);
 
         if (item.getImageUriString() != null && !item.getImageUriString().isEmpty()) {
-            holder.ivIcon.setImageURI(Uri.parse(item.getImageUriString()));
+            holder.binding.ivMaterialImage.setImageURI(Uri.parse(item.getImageUriString()));
         } else {
-            holder.ivIcon.setImageResource(item.getIconRes());
+            holder.binding.ivMaterialImage.setImageResource(item.getIconRes());
         }
 
-        holder.tvTitle.setText(item.getTitle());
-        holder.tvDescription.setText(item.getDescription());
+        holder.binding.tvMaterialTitle.setText(item.getTitle());
+        holder.binding.tvMaterialSubtitle.setText(item.getDescription());
 
-        // Разбор нескольких хештегов
         List<String> hashtags = parseHashtags(item.getTag());
         if (!hashtags.isEmpty()) {
-            holder.chipGroupTags.setVisibility(View.VISIBLE);
-            holder.chipGroupTags.removeAllViews();
+            holder.binding.chipGroupMaterialTags.setVisibility(View.VISIBLE);
+            holder.binding.chipGroupMaterialTags.removeAllViews();
 
             for (String tag : hashtags) {
                 TextView tagView = (TextView) LayoutInflater.from(holder.itemView.getContext())
-                        .inflate(R.layout.item_hashtag, holder.chipGroupTags, false);
-                tagView.setText(holder.itemView.getContext().getString(R.string.tag_hash_format, tag));
-                holder.chipGroupTags.addView(tagView);
+                        .inflate(R.layout.item_hashtag, holder.binding.chipGroupMaterialTags, false);
+                tagView.setText("# " + tag);
+                holder.binding.chipGroupMaterialTags.addView(tagView);
             }
         } else {
-            holder.chipGroupTags.setVisibility(View.GONE);
+            holder.binding.chipGroupMaterialTags.setVisibility(View.GONE);
         }
 
         if (showSettings) {
-            holder.ivSettings.setVisibility(View.VISIBLE);
-            holder.ivSettings.setOnClickListener(v -> {
+            holder.binding.btnSettings.setVisibility(View.VISIBLE);
+            holder.binding.btnSettings.setOnClickListener(v -> {
                 if (clickListener != null) {
                     clickListener.onSettingsClick(item);
                 }
             });
         } else {
-            holder.ivSettings.setVisibility(View.GONE);
+            holder.binding.btnSettings.setVisibility(View.GONE);
 
             holder.itemView.setOnClickListener(v -> {
                 if (clickListener != null) {
@@ -125,8 +112,8 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
         }
 
         if (showCheckBox) {
-            holder.checkBox.setVisibility(View.VISIBLE);
-            holder.checkBox.setChecked(selectedPositions.contains(position));
+            holder.binding.checkBox.setVisibility(View.VISIBLE);
+            holder.binding.checkBox.setChecked(selectedPositions.contains(position));
             holder.itemView.setOnClickListener(v -> {
                 if (selectedPositions.contains(position)) {
                     selectedPositions.remove(position);
@@ -136,7 +123,7 @@ public class MaterialAdapter extends RecyclerView.Adapter<MaterialAdapter.ViewHo
                 notifyItemChanged(position);
             });
         } else {
-            holder.checkBox.setVisibility(View.GONE);
+            holder.binding.checkBox.setVisibility(View.GONE);
         }
     }
 

@@ -12,10 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -34,6 +30,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.diyproject.R;
+import com.example.diyproject.databinding.DialogAddHashtagBinding;
+import com.example.diyproject.databinding.FragmentEditInstructionBinding;
 import com.example.diyproject.ui.common.SaveDraftBottomSheet;
 import com.example.diyproject.ui.storage.MaterialAdapter;
 import com.example.diyproject.ui.storage.MaterialItem;
@@ -61,6 +59,7 @@ public class EditInstructionFragment extends Fragment {
     private int pendingImagePosition = -1;
 
     private EditInstructionViewModel viewModel;
+    private FragmentEditInstructionBinding binding;
 
     private final ActivityResultLauncher<PickVisualMediaRequest> pickStepImage =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
@@ -80,9 +79,8 @@ public class EditInstructionFragment extends Fragment {
         pickMedia = registerForActivityResult(
                 new ActivityResultContracts.PickVisualMedia(),
                 uri -> {
-                    if (uri != null) {
-                        ImageView ivInstructionImage = requireView().findViewById(R.id.ivInstructionImage);
-                        loadPreview(uri, ivInstructionImage);
+                    if (uri != null && binding != null) {
+                        loadPreview(uri, binding.ivInstructionImage);
                         if (viewModel != null) {
                             viewModel.setImageUri(uri);
                         }
@@ -92,9 +90,10 @@ public class EditInstructionFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_edit_instruction, container, false);
+        binding = FragmentEditInstructionBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -103,35 +102,29 @@ public class EditInstructionFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(EditInstructionViewModel.class);
 
-        ImageView ivInstructionImage = view.findViewById(R.id.ivInstructionImage);
-
-        // Подача аргументов с превью картинки при старте
+        // Аргументы с картинкой при старте
         if (getArguments() != null) {
             String imageUriString = getArguments().getString("instructionImageUri");
             if (imageUriString != null && !imageUriString.isEmpty() && !"empty".equals(imageUriString)) {
                 Uri imageUri = Uri.parse(imageUriString);
-                loadPreview(imageUri, ivInstructionImage);
+                loadPreview(imageUri, binding.ivInstructionImage);
                 viewModel.setImageUri(imageUri);
             }
         }
 
         viewModel.getImageUri().observe(getViewLifecycleOwner(), uri -> {
             if (uri != null) {
-                loadPreview(uri, ivInstructionImage);
+                loadPreview(uri, binding.ivInstructionImage);
             }
         });
 
-        View frameImagePicker = view.findViewById(R.id.frameImagePicker);
-        frameImagePicker.setOnClickListener(v -> {
+        binding.frameImagePicker.setOnClickListener(v -> {
             pickMedia.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
                     .build());
         });
 
-        View toolbar = view.findViewById(R.id.customToolbar);
-        ImageButton btnClose = toolbar.findViewById(R.id.btnLeftAction);
-
-        btnClose.setOnClickListener(v -> {
+        binding.customToolbar.btnLeftAction.setOnClickListener(v -> {
             SaveDraftBottomSheet bottomSheet = new SaveDraftBottomSheet();
             bottomSheet.setListener(new SaveDraftBottomSheet.OnDraftActionListener() {
                 @Override
@@ -147,29 +140,21 @@ public class EditInstructionFragment extends Fragment {
             bottomSheet.show(getParentFragmentManager(), "SaveDraftBottomSheet");
         });
 
-        // Карточка "Выбор категории" вверху
-        View cardTheme = view.findViewById(R.id.cardTheme);
-        TextView tvThemeTitle = cardTheme.findViewById(R.id.tvTitle);
-        if (tvThemeTitle != null) {
-            tvThemeTitle.setText("Выбор категории");
-        }
-
-        ImageButton ivArrow = cardTheme.findViewById(R.id.ivArrow);
-        cardTheme.setOnClickListener(v -> openCategorySelection(cardTheme));
-        if (ivArrow != null) {
-            ivArrow.setOnClickListener(v -> openCategorySelection(cardTheme));
-        }
+        // "Выбор категории" вверху
+        binding.cardTheme.tvTitle.setText("Выбор категории");
+        View.OnClickListener openCategory = v -> openCategorySelection();
+        binding.cardTheme.getRoot().setOnClickListener(openCategory);
+        binding.cardTheme.ivArrow.setOnClickListener(openCategory);
 
         viewModel.getSelectedCategories().observe(getViewLifecycleOwner(), categories -> {
             if (categories != null && !categories.isEmpty()) {
-                ChipGroup chipGroup = cardTheme.findViewById(R.id.chipGroup);
-                chipGroup.setVisibility(View.VISIBLE);
-                chipGroup.removeAllViews();
+                binding.cardTheme.chipGroup.setVisibility(View.VISIBLE);
+                binding.cardTheme.chipGroup.removeAllViews();
 
                 for (String theme : categories) {
-                    Chip chip = (Chip) getLayoutInflater().inflate(R.layout.item_chip_category, chipGroup, false);
+                    Chip chip = (Chip) getLayoutInflater().inflate(R.layout.item_chip_category, binding.cardTheme.chipGroup, false);
                     chip.setText(theme);
-                    chipGroup.addView(chip);
+                    binding.cardTheme.chipGroup.addView(chip);
                 }
             }
         });
@@ -181,21 +166,14 @@ public class EditInstructionFragment extends Fragment {
             }
         });
 
-
-
-
         // Карточка времени
-        View cardTimeInclude = view.findViewById(R.id.cardTime);
-        View materialCard = cardTimeInclude.findViewById(R.id.cardTimeRoot);
-        TextView tvSelectedTime = cardTimeInclude.findViewById(R.id.tvSelectedTime);
-
         viewModel.getSelectedTime().observe(getViewLifecycleOwner(), time -> {
             if (time != null && !time.isEmpty()) {
-                tvSelectedTime.setText(time);
+                binding.cardTime.tvSelectedTime.setText(time);
             }
         });
 
-        materialCard.setOnClickListener(v -> {
+        binding.cardTime.cardTimeRoot.setOnClickListener(v -> {
             ContextThemeWrapper wrapper = new ContextThemeWrapper(requireContext(), R.style.PopupMenuTheme);
             PopupMenu popupMenu = new PopupMenu(wrapper, v, Gravity.CENTER);
             popupMenu.getMenu().add("15 минут");
@@ -213,45 +191,32 @@ public class EditInstructionFragment extends Fragment {
             popupMenu.show();
         });
 
-
-
         // Редактор названия (100 символов)
-        View titleInclude = view.findViewById(R.id.cardTitle);
-        if (titleInclude != null) {
-            EditText etTitle = titleInclude.findViewById(R.id.etTitle);
-            TextView tvTitleCounter = titleInclude.findViewById(R.id.tvTitleCounter);
+        viewModel.getTitle().observe(getViewLifecycleOwner(), text -> {
+            if (text != null && !binding.cardTitle.etTitle.getText().toString().equals(text)) {
+                binding.cardTitle.etTitle.setText(text);
+            }
+        });
 
-            viewModel.getTitle().observe(getViewLifecycleOwner(), text -> {
-                if (text != null && !etTitle.getText().toString().equals(text)) {
-                    etTitle.setText(text);
-                }
-            });
+        binding.cardTitle.etTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            etTitle.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                binding.cardTitle.tvTitleCounter.setText(s.length() + "/100");
+                viewModel.setTitle(s.toString());
+            }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    tvTitleCounter.setText(s.length() + "/100");
-                    viewModel.setTitle(s.toString());
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {}
-            });
-        }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         // Описание (400 символов) и хештеги
-        View descInclude = view.findViewById(R.id.cardDescription);
-        EditText etDescription = descInclude.findViewById(R.id.etDescription);
-        TextView tvAddHashtag = descInclude.findViewById(R.id.tvAddHashtag);
-        ChipGroup chipGroupTags = descInclude.findViewById(R.id.chipGroupTags);
-
         viewModel.getDescription().observe(getViewLifecycleOwner(), text -> {
-            if (text != null && !etDescription.getText().toString().equals(text)) {
+            if (text != null && !binding.cardDescription.etDescription.getText().toString().equals(text)) {
                 isUpdatingDescription = true;
-                etDescription.setText(text);
+                binding.cardDescription.etDescription.setText(text);
                 isUpdatingDescription = false;
             }
         });
@@ -260,13 +225,13 @@ public class EditInstructionFragment extends Fragment {
             if (tags != null) {
                 hashtagSet.clear();
                 hashtagSet.addAll(tags);
-                refreshHashtagChips(chipGroupTags);
+                refreshHashtagChips(binding.cardDescription.chipGroupTags);
             }
         });
 
-        tvAddHashtag.setOnClickListener(v -> showAddHashtagDialog(chipGroupTags));
+        binding.cardDescription.tvAddHashtag.setOnClickListener(v -> showAddHashtagDialog(binding.cardDescription.chipGroupTags));
 
-        etDescription.addTextChangedListener(new TextWatcher() {
+        binding.cardDescription.etDescription.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -275,7 +240,6 @@ public class EditInstructionFragment extends Fragment {
                 if (isUpdatingDescription) return;
 
                 String currentText = s.toString();
-
                 viewModel.setDescription(currentText);
 
                 Pattern pattern = Pattern.compile("#([a-zA-Zа-яА-Я0-9_]+)\\s");
@@ -299,34 +263,25 @@ public class EditInstructionFragment extends Fragment {
                     finalText = sb.toString();
 
                     isUpdatingDescription = true;
-                    etDescription.setText(finalText);
-                    etDescription.setSelection(finalText.length());
+                    binding.cardDescription.etDescription.setText(finalText);
+                    binding.cardDescription.etDescription.setSelection(finalText.length());
                     viewModel.setDescription(finalText);
                     isUpdatingDescription = false;
 
                     viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
-                }
-                else {
+                } else {
                     finalText = currentText;
                 }
 
-                TextView tvDescCounter = descInclude.findViewById(R.id.tvDescCounter);
-                tvDescCounter.setText(finalText.length() + "/400");
-
+                binding.cardDescription.tvDescCounter.setText(finalText.length() + "/400");
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
 
-        // Карточка "Выбор материала"
-        View cardSelectMaterial = view.findViewById(R.id.cardSelectMaterial);
-        TextView tvMaterialTitle = cardSelectMaterial.findViewById(R.id.tvTitle);
-        if (tvMaterialTitle != null) {
-            tvMaterialTitle.setText("Выбор материала");
-        }
-        ImageButton ivMaterialArrow = cardSelectMaterial.findViewById(R.id.ivArrow);
-
+        // "Выбор материала" внизу
+        binding.cardSelectMaterial.tvTitle.setText("Выбор материала");
         View.OnClickListener openMaterialSelection = v -> {
             EditInstructionFragmentDirections.ActionEditInstructionFragmentToMaterialSelectionFragment action =
                     EditInstructionFragmentDirections.actionEditInstructionFragmentToMaterialSelectionFragment();
@@ -339,20 +294,17 @@ public class EditInstructionFragment extends Fragment {
             NavHostFragment.findNavController(EditInstructionFragment.this).navigate(action);
         };
 
-        cardSelectMaterial.setOnClickListener(openMaterialSelection);
-        if (ivMaterialArrow != null) {
-            ivMaterialArrow.setOnClickListener(openMaterialSelection);
-        }
+        binding.cardSelectMaterial.getRoot().setOnClickListener(openMaterialSelection);
+        binding.cardSelectMaterial.ivArrow.setOnClickListener(openMaterialSelection);
 
         viewModel.getSelectedMaterialItems().observe(getViewLifecycleOwner(), materials -> {
             if (materials != null) {
                 selectedMaterialItems = materials;
-                RecyclerView rvSelectedMaterials = view.findViewById(R.id.rvSelectedMaterials);
                 if (materials.isEmpty()) {
-                    rvSelectedMaterials.setVisibility(View.GONE);
+                    binding.rvSelectedMaterials.setVisibility(View.GONE);
                 } else {
-                    rvSelectedMaterials.setVisibility(View.VISIBLE);
-                    setupSelectedMaterialsAdapter(rvSelectedMaterials);
+                    binding.rvSelectedMaterials.setVisibility(View.VISIBLE);
+                    setupSelectedMaterialsAdapter(binding.rvSelectedMaterials);
                 }
             }
         });
@@ -429,8 +381,7 @@ public class EditInstructionFragment extends Fragment {
         });
 
         // Настройка RecyclerView для шагов
-        RecyclerView rvInstructionSteps = view.findViewById(R.id.rvInstructionSteps);
-        rvInstructionSteps.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.rvInstructionSteps.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         viewModel.getInstructionSteps().observe(getViewLifecycleOwner(), stepList -> {
             if (stepList != null) {
@@ -438,7 +389,7 @@ public class EditInstructionFragment extends Fragment {
                 if (steps.isEmpty()) {
                     steps.add(new InstructionStep("", null));
                 }
-                setupStepsAdapter(rvInstructionSteps);
+                setupStepsAdapter();
             }
         });
 
@@ -448,23 +399,22 @@ public class EditInstructionFragment extends Fragment {
             viewModel.setInstructionSteps(steps);
         }
 
-        TextView tvAddStep = view.findViewById(R.id.tvAddStep);
-        tvAddStep.setOnClickListener(v -> {
+        binding.tvAddStep.setOnClickListener(v -> {
             InstructionStep newStep = new InstructionStep("", null);
             steps.add(newStep);
             viewModel.setInstructionSteps(steps);
-            rvInstructionSteps.smoothScrollToPosition(steps.size() - 1);
+            binding.rvInstructionSteps.smoothScrollToPosition(steps.size() - 1);
         });
     }
 
-    private void setupStepsAdapter(RecyclerView rvInstructionSteps) {
+    private void setupStepsAdapter() {
         stepAdapter = new InstructionStepAdapter(steps, position -> {
             pendingImagePosition = position;
             pickStepImage.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                     .build());
         });
-        rvInstructionSteps.setAdapter(stepAdapter);
+        binding.rvInstructionSteps.setAdapter(stepAdapter);
     }
 
     private void setupSelectedMaterialsAdapter(RecyclerView rvSelectedMaterials) {
@@ -506,8 +456,11 @@ public class EditInstructionFragment extends Fragment {
         String cleanTag = tag.replace("#", "").trim();
         if (!cleanTag.isEmpty()) {
             hashtagSet.add(cleanTag);
-            viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
-
+            if (viewModel != null) {
+                viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
+            } else {
+                refreshHashtagChips(chipGroup);
+            }
         }
     }
 
@@ -522,8 +475,11 @@ public class EditInstructionFragment extends Fragment {
             tagView.setText(getString(R.string.tag_hash_format, tag));
             tagView.setOnClickListener(v -> {
                 hashtagSet.remove(tag);
-                viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
-
+                if (viewModel != null) {
+                    viewModel.setHashtags(new LinkedHashSet<>(hashtagSet));
+                } else {
+                    refreshHashtagChips(chipGroup);
+                }
             });
             chipGroup.addView(tagView);
         }
@@ -531,8 +487,8 @@ public class EditInstructionFragment extends Fragment {
 
     private void showAddHashtagDialog(ChipGroup chipGroupTags) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_hashtag, null);
-        builder.setView(dialogView);
+        DialogAddHashtagBinding dialogBinding = DialogAddHashtagBinding.inflate(getLayoutInflater());
+        builder.setView(dialogBinding.getRoot());
 
         AlertDialog dialog = builder.create();
         if (dialog.getWindow() != null) {
@@ -540,23 +496,20 @@ public class EditInstructionFragment extends Fragment {
         }
         dialog.show();
 
-        AutoCompleteTextView etNewTag = dialogView.findViewById(R.id.etNewTag);
-        Button btnAddTag = dialogView.findViewById(R.id.btnAddTag);
-
         String[] popularTags = {"вязание", "ремонт", "игрушки", "пряжа", "шитье", "реставрация", "поделки", "новогодние"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
                 R.layout.item_dropdown_tag, popularTags);
-        etNewTag.setAdapter(adapter);
+        dialogBinding.etNewTag.setAdapter(adapter);
 
-        etNewTag.setOnItemClickListener((parent, view, position, id) -> {
+        dialogBinding.etNewTag.setOnItemClickListener((parent, view, position, id) -> {
             String selectedTag = (String) parent.getItemAtPosition(position);
-            etNewTag.setText(selectedTag);
-            etNewTag.setSelection(selectedTag.length());
+            dialogBinding.etNewTag.setText(selectedTag);
+            dialogBinding.etNewTag.setSelection(selectedTag.length());
         });
 
-        btnAddTag.setOnClickListener(v -> {
-            String newTag = etNewTag.getText().toString().trim();
+        dialogBinding.btnAddTag.setOnClickListener(v -> {
+            String newTag = dialogBinding.etNewTag.getText().toString().trim();
             if (!newTag.isEmpty()) {
                 addHashtag(newTag, chipGroupTags);
                 dialog.dismiss();
@@ -566,11 +519,10 @@ public class EditInstructionFragment extends Fragment {
         });
     }
 
-    private void openCategorySelection(View cardTheme) {
-        ChipGroup chipGroup = cardTheme.findViewById(R.id.chipGroup);
+    private void openCategorySelection() {
         ArrayList<String> currentThemes = new ArrayList<>();
-        for (int i = 0; i < chipGroup.getChildCount(); i++) {
-            Chip chip = (Chip) chipGroup.getChildAt(i);
+        for (int i = 0; i < binding.cardTheme.chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) binding.cardTheme.chipGroup.getChildAt(i);
             currentThemes.add(chip.getText().toString());
         }
 
@@ -608,5 +560,11 @@ public class EditInstructionFragment extends Fragment {
         } else {
             imageView.setImageURI(uri);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

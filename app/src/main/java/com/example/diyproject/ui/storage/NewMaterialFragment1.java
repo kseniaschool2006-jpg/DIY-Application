@@ -2,54 +2,52 @@ package com.example.diyproject.ui.storage;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.diyproject.R;
+import com.example.diyproject.databinding.FragmentNewMaterial1Binding;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class NewMaterialFragment1 extends Fragment {
 
+    private FragmentNewMaterial1Binding binding;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_new_material1, container, false);
+        binding = FragmentNewMaterial1Binding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
 
-        View cardGalleryInclude = view.findViewById(R.id.cardGallery);
-        View cardCameraInclude = view.findViewById(R.id.cardCamera);
-        View cardSmartInclude = view.findViewById(R.id.cardSmartDetector);
-        View cardInternetInclude = view.findViewById(R.id.cardInternet);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        setupCard(cardGalleryInclude, R.drawable.ic_gallery, "Галерея", true);
-        setupCard(cardCameraInclude, R.drawable.ic_camera, "Камера", false);
-        setupCard(cardSmartInclude, R.drawable.ic_ai, "Умный детектор", false);
-        setupCard(cardInternetInclude, R.drawable.ic_internet, "Интернет", false);
+        setupCard(binding.cardGallery.getRoot(), R.drawable.ic_gallery, "Галерея", true);
+        setupCard(binding.cardCamera.getRoot(), R.drawable.ic_camera, "Камера", false);
+        setupCard(binding.cardSmartDetector.getRoot(), R.drawable.ic_ai, "Умный детектор", false);
+        setupCard(binding.cardInternet.getRoot(), R.drawable.ic_internet, "Интернет", false);
 
+        setupToolbar();
 
-
-        setupToolbar(view);
-
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLibrary);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.recyclerViewLibrary.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         List<MaterialItem> libraryMaterials = new ArrayList<>();
         libraryMaterials.add(new MaterialItem("Материал", "Краткое описание", null, R.drawable.ic_material));
@@ -64,24 +62,16 @@ public class NewMaterialFragment1 extends Fragment {
             }
 
             @Override
-            public void onSettingsClick(MaterialItem item) {
-                // Здесь ничего не делаем, так как showSettings = false
-            }
+            public void onSettingsClick(MaterialItem item) {}
         });
 
-        recyclerView.setAdapter(adapter);
+        binding.recyclerViewLibrary.setAdapter(adapter);
 
-
-
-
-        TextView tvSeeAll = view.findViewById(R.id.tvSeeAll);
         String text = "Посмотреть все";
         SpannableString spannable = new SpannableString(text);
         spannable.setSpan(new UnderlineSpan(), 0, text.length(), 0);
-        tvSeeAll.setText(spannable);
-        return view;
+        binding.tvSeeAll.setText(spannable);
     }
-
 
     private void setupCard(View includeView, int iconRes, String title, boolean isActive) {
         if (includeView == null) return;
@@ -120,31 +110,22 @@ public class NewMaterialFragment1 extends Fragment {
                 text.setTextColor(beigeDarkColor);
             }
         }
-
-        card.setOnClickListener(v -> {
-            // Здесь можно открыть галерею, камеру и т.д.
-        });
-
-
     }
 
-    private void setupToolbar(View view) {
-        View toolbar = view.findViewById(R.id.customToolbar);
-
-        ImageButton btnLeft = toolbar.findViewById(R.id.btnLeftAction);
-        ImageButton btnRight = toolbar.findViewById(R.id.btnRightAction);
-        TextView tvTitle = toolbar.findViewById(R.id.tvToolbarTitle);
-
-        tvTitle.setText("Добавить материал");
-
-        btnLeft.setImageResource(R.drawable.ic_close);
-        btnLeft.setOnClickListener(v -> {
+    private void setupToolbar() {
+        binding.customToolbar.tvToolbarTitle.setText("Добавить материал");
+        binding.customToolbar.btnLeftAction.setImageResource(R.drawable.ic_close);
+        binding.customToolbar.btnLeftAction.setOnClickListener(v -> {
             requireActivity().getOnBackPressedDispatcher().onBackPressed();
         });
 
-        btnRight.setVisibility(View.VISIBLE);
-        btnRight.setImageResource(R.drawable.ic_question);
-        btnRight.setOnClickListener(v -> {
-        });
+        binding.customToolbar.btnRightAction.setVisibility(View.VISIBLE);
+        binding.customToolbar.btnRightAction.setImageResource(R.drawable.ic_question);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }
