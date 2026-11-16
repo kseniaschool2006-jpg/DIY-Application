@@ -3,5 +3,7 @@
     <style name="Base.Theme.DIYProject" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/color_beige_dark</item>
+        <item name="colorOnPrimary">@color/color_white</item>
     </style>
 </resources>

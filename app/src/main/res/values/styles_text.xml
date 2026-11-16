@@ -37,6 +37,12 @@
     </style>
 
 
+    <!-- Заголовок на страницах (32 px semibold) -->
+    <style name="TextAppearance.App.Title.OnAuthorization" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@color/color_beige_dark</item>
+    </style>
 
 
 

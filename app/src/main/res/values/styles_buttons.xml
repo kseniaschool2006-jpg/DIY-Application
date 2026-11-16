@@ -209,6 +209,16 @@
         <item name="tint">@color/nav_icon_tint</item>
     </style>
 
+    <style name="Widget.App.Input" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="android:textColorHint">@color/color_beige_dark_30</item>
+        <item name="hintTextColor">@color/color_beige_dark</item>
+        <item name="boxStrokeColor">@color/color_beige_dark</item>
+    </style>
 
+    <style name="Widget.App.Input.EditText" parent="Widget.Material3.TextInputEditText.OutlinedBox">
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/color_beige_dark</item>
+    </style>
 
 </resources>

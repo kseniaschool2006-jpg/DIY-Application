@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        style="@style/TextAppearance.App.Title.OnAuthorization"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="76dp"
+        android:text="Авторизация" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_login"
+        style="@style/Widget.App.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:hint="Почта или номер телефона">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_login"
+            style="@style/Widget.App.Input.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_login"
+        style="@style/ButtonStyle.Primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="76dp"
+        android:text="Войти" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_google"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:text="Вход с аккаунтом Google"
+        app:icon="@drawable/ic_google"
+        app:iconTint="@null" />
+
+    <TextView
+        style="@style/TextAppearance.App.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="Войти через соц-сеть" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btn_instagram"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="59dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Instagram"
+            android:src="@drawable/ic_instagram" />
+
+        <ImageButton
+            android:id="@+id/btn_tiktok"
+            android:layout_width="48dp"
+            android:layout_height="54dp"
+            android:layout_marginEnd="59dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="TikTok"
+            android:src="@drawable/ic_tiktok" />
+
+        <ImageButton
+            android:id="@+id/btn_pinterest"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Pinterest"
+            android:src="@drawable/ic_pinterest" />
+    </LinearLayout>
+
+</LinearLayout>
