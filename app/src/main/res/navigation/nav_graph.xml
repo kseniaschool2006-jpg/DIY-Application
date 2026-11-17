@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/toCheckFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/storageFragmentMain"
@@ -91,4 +91,11 @@
         android:id="@+id/codeFragment"
         android:name="com.example.diyproject.ui.authorization.CodeFragment"
         android:label="CodeFragment" />
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.diyproject.ui.common.HomeFragment"
+        android:label="HomeFragment">
+         />
+    </fragment>
 </navigation>

@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         // ЗАМЕНИТЬ на реальные id фрагментов из nav_graph
         // -1 = экрана пока нет, иконка просто ничего не делает
         int[] destIds = {
-                R.id.toCheckFragment,       // дом
+                R.id.homeFragment,       // дом
                 R.id.storageFragmentMain,   // поиск
                 -1,                         // добавление
                 -1,                         // архив

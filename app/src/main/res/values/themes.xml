@@ -19,5 +19,18 @@
         <item name="android:padding">@dimen/space_s</item>
     </style>
 
+    <!-- Скругление картинки в карточке инструкции -->
+    <style name="ShapeAppearance.App.Instruction" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_standard</item>
+    </style>
 
+    <!-- Стиль картинки в карточке -->
+    <style name="InstructionImageStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.App.Instruction</item>
+    </style>
 </resources>
