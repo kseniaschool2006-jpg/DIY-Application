@@ -141,7 +141,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
-                    android:layout_marginTop="@dimen/space_xs"/>
+                    />
             </LinearLayout>
 
             <LinearLayout

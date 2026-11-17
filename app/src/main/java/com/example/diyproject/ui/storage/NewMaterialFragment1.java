@@ -82,8 +82,8 @@ public class NewMaterialFragment1 extends Fragment {
 
         setupCard(binding.cardGallery.getRoot(), R.drawable.ic_gallery, "Галерея", true);
         setupCard(binding.cardCamera.getRoot(), R.drawable.ic_camera, "Камера", false);
-        setupCard(binding.cardSmartDetector.getRoot(), R.drawable.ic_ai, "Умный детектор", false);
-        setupCard(binding.cardInternet.getRoot(), R.drawable.ic_internet, "Интернет", false);
+//        setupCard(binding.cardSmartDetector.getRoot(), R.drawable.ic_ai, "Умный детектор", false);
+//        setupCard(binding.cardInternet.getRoot(), R.drawable.ic_internet, "Интернет", false);
 
         binding.cardGallery.getRoot().setOnClickListener(v -> {
             pickGalleryLauncher.launch(new PickVisualMediaRequest.Builder()
@@ -100,9 +100,9 @@ public class NewMaterialFragment1 extends Fragment {
         binding.recyclerViewLibrary.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         List<MaterialItem> libraryMaterials = new ArrayList<>();
-        libraryMaterials.add(new MaterialItem("Материал", "Краткое описание", null, R.drawable.ic_material));
-        libraryMaterials.add(new MaterialItem("Гвозди", "5см, тонкие, в кладовой", "мелкий ремонт", R.drawable.ic_material));
-        libraryMaterials.add(new MaterialItem("Пряжа", "Зеленая пряжа, использовать крючек 4мм", "новогодние игрушки", R.drawable.ic_material));
+        libraryMaterials.add(new MaterialItem("Нитки", "черные", null, R.drawable.ic_material));
+        libraryMaterials.add(new MaterialItem("Гвозди", "3см, тонкие",null, R.drawable.ic_material));
+        libraryMaterials.add(new MaterialItem("Пряжа", "Зеленая пряжа", null , R.drawable.ic_material));
 
         MaterialAdapter adapter = new MaterialAdapter(libraryMaterials, true, false, new MaterialAdapter.OnMaterialClickListener() {
             @Override

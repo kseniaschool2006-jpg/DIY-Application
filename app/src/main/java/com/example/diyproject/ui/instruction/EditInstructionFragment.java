@@ -102,12 +102,11 @@ public class EditInstructionFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(EditInstructionViewModel.class);
 
-        // Аргументы с картинкой при старте
-        if (getArguments() != null) {
+        // Аргументы с картинкой при старте (только если в ViewModel еще не сохранена картинка)
+        if (getArguments() != null && viewModel.getImageUri().getValue() == null) {
             String imageUriString = getArguments().getString("instructionImageUri");
             if (imageUriString != null && !imageUriString.isEmpty() && !"empty".equals(imageUriString)) {
                 Uri imageUri = Uri.parse(imageUriString);
-                loadPreview(imageUri, binding.ivInstructionImage);
                 viewModel.setImageUri(imageUri);
             }
         }
@@ -118,11 +117,14 @@ public class EditInstructionFragment extends Fragment {
             }
         });
 
-        binding.frameImagePicker.setOnClickListener(v -> {
+        View.OnClickListener openGalleryPicker = v -> {
             pickMedia.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
                     .build());
-        });
+        };
+
+        binding.frameImagePicker.setOnClickListener(openGalleryPicker);
+        binding.ivInstructionImage.setOnClickListener(openGalleryPicker);
 
         binding.customToolbar.btnLeftAction.setOnClickListener(v -> {
             SaveDraftBottomSheet bottomSheet = new SaveDraftBottomSheet();

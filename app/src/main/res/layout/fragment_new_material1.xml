@@ -41,20 +41,20 @@
                 android:layout_columnWeight="1"
                 android:layout_marginBottom="@dimen/space_s" />
 
-            <include
-                layout="@layout/item_action_card"
-                android:id="@+id/cardSmartDetector"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_marginEnd="@dimen/space_s" />
+<!--            <include-->
+<!--                layout="@layout/item_action_card"-->
+<!--                android:id="@+id/cardSmartDetector"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:layout_marginEnd="@dimen/space_s" />-->
 
-            <include
-                layout="@layout/item_action_card"
-                android:id="@+id/cardInternet"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1" />
+<!--            <include-->
+<!--                layout="@layout/item_action_card"-->
+<!--                android:id="@+id/cardInternet"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1" />-->
 
         </GridLayout>
 

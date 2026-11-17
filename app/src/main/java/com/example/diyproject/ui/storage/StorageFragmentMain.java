@@ -88,7 +88,7 @@ public class StorageFragmentMain extends Fragment {
     private List<String> loadCategoriesFromDatabase() {
         List<String> categories = new ArrayList<>();
         categories.add("Все");
-        categories.add("Руководство");
+        categories.add("Рукоделие");
         categories.add("Ремонт");
         categories.add("Сад");
         return categories;
@@ -122,9 +122,9 @@ public class StorageFragmentMain extends Fragment {
 
         if (viewModel.getMaterials().getValue() == null || viewModel.getMaterials().getValue().isEmpty()) {
             List<MaterialItem> initial = new ArrayList<>();
-            initial.add(new MaterialItem("Материал", "Краткое описание", null, R.drawable.ic_material));
-            initial.add(new MaterialItem("Гвозди", "5см, тонкие", "мелкийремонт", R.drawable.ic_material));
-            initial.add(new MaterialItem("Пряжа", "Зеленая пряжа", "новогодниеигрушки", R.drawable.ic_material));
+            initial.add(new MaterialItem("Лента", "30мм, синяя", null, R.drawable.ic_material));
+            initial.add(new MaterialItem("Гвозди", "5см, тонкие, в кладовой", "мелкийремонт", R.drawable.ic_material));
+            initial.add(new MaterialItem("Пряжа", "Зеленая пряжа, использовать крючок 4 мм", "новогодниеигрушки", R.drawable.ic_material));
             viewModel.setMaterials(initial);
         }
 
