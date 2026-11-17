@@ -58,6 +58,10 @@
         <item name="android:tint">@color/color_green</item>
     </style>
 
+    <style name="IconButtonStyle.NoColor">
+        <item name="android:tint">@null</item>
+    </style>
+
 
 
 
@@ -213,6 +217,10 @@
         <item name="android:textColorHint">@color/color_beige_dark_30</item>
         <item name="hintTextColor">@color/color_beige_dark</item>
         <item name="boxStrokeColor">@color/color_beige_dark</item>
+        <item name="boxCornerRadiusTopStart">@dimen/radius_pill</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/radius_pill</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/radius_pill</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/radius_pill</item>
     </style>
 
     <style name="Widget.App.Input.EditText" parent="Widget.Material3.TextInputEditText.OutlinedBox">

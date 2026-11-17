@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="@dimen/fab_main_size"
         android:text="Авторизация" />
 
 
@@ -26,16 +26,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="120dp"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="@dimen/space_s" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_code"
         style="@style/Widget.App.Input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="@dimen/space_large"
         android:hint="Поле для ввода кода">
-
 
     <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_code"
@@ -49,7 +48,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_confirm"
-        style="@style/ButtonStyle.Primary"
+        style="@style/ButtonStyle.Secondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Войти" />
