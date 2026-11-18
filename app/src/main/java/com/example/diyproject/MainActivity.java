@@ -42,7 +42,11 @@ public class MainActivity extends AppCompatActivity {
                 -1,                         // архив
                 -1                          // профиль
         };
-
+        // список экранов где должно быть видно нижнее меню
+        // но которые не являются вкладками главными
+        int[] extraVisibleIds = {
+                R.id.searchResultFragment
+        };
         View[] items = {findViewById(R.id.navHome), findViewById(R.id.navSearch),
                 findViewById(R.id.navAdd), findViewById(R.id.navArchive),
                 findViewById(R.id.navProfile)};
@@ -73,7 +77,12 @@ public class MainActivity extends AppCompatActivity {
                 items[i].setScaleY(selected ? 62f / 52f : 1f);
                 if (selected) isTab = true;
             }
-            bottomBar.setVisibility(isTab ? View.VISIBLE : View.GONE);
+
+            boolean showBar = isTab;
+            for (int id : extraVisibleIds) {
+                if (destination.getId() == id) showBar = true;
+            }
+            bottomBar.setVisibility(showBar ? View.VISIBLE : View.GONE);
         });
     }
 }

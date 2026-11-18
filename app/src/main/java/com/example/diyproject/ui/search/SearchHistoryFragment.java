@@ -3,6 +3,7 @@ package com.example.diyproject.ui.search;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -38,12 +39,12 @@ public class SearchHistoryFragment extends Fragment {
         adapter = new SearchHistoryAdapter(new SearchHistoryAdapter.Listener() {
             @Override
             public void onItemClick(SearchHistoryItem item) {
-                // позже
+                openResult(item.getTitle());
             }
 
             @Override
             public void onRemoveClick(SearchHistoryItem item) {
-                // позже
+                // TODO: с БД здесь же удалять запись из базы
                 adapter.removeItem(item);
             }
         });
@@ -55,12 +56,38 @@ public class SearchHistoryFragment extends Fragment {
             NavHostFragment.findNavController(this).popBackStack();
         });
 
+        Bundle args = getArguments();
+        if (args != null) {
+            String q = args.getString("query", "");
+            etSearch.setText(q);
+            etSearch.setSelection(q.length());
+        }
+
+        etSearch.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String text = etSearch.getText().toString().trim();
+                if (!text.isEmpty()) {
+                    openResult(text);
+                }
+                return true;
+            }
+            return false;
+        });
+
         etSearch.requestFocus();
         etSearch.post(() -> {
             InputMethodManager imm = (InputMethodManager)
                     requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT);
         });
+    }
+
+    private void openResult(String text) {
+        hideKeyboard();
+        Bundle out = new Bundle();
+        out.putString("query", text);
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_searchHistory_to_searchResult, out);
     }
 
     private void hideKeyboard() {

@@ -105,12 +105,41 @@
         <action
             android:id="@+id/action_searchStart_to_searchHistory"
             app:destination="@id/searchHistoryFragment" />
+        <action
+            android:id="@+id/action_searchStart_to_searchResult"
+            app:destination="@id/searchResultFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/searchHistoryFragment"
         android:name="com.example.diyproject.ui.search.SearchHistoryFragment"
         android:label="SearchHistoryFragment"
-        tools:layout="@layout/fragment_search_history" />
+        tools:layout="@layout/fragment_search_history">
+        <argument
+            android:name="query"
+            app:argType="string"
+            android:defaultValue="" />
+        <action
+            android:id="@+id/action_searchHistory_to_searchResult"
+            app:destination="@id/searchResultFragment"
+            app:popUpTo="@id/searchHistoryFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="com.example.diyproject.ui.search.SearchResultFragment"
+        android:label="SearchResultFragment"
+        tools:layout="@layout/fragment_search_result">
+        <argument
+            android:name="query"
+            app:argType="string"
+            android:defaultValue="" />
+        <action
+            android:id="@+id/action_searchResult_to_searchHistory"
+            app:destination="@id/searchHistoryFragment"
+            app:popUpTo="@id/searchResultFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>
