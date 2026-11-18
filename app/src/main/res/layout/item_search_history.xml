@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/space_s"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/iv_history"
+        style="@style/InstructionImageStyle"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:adjustViewBounds="false" />
+
+    <TextView
+        android:id="@+id/tv_history_title"
+        style="@style/TextAppearance.App.Title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_medium"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1" />
+
+    <ImageButton
+        android:id="@+id/btn_remove"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Удалить"
+        android:src="@drawable/ic_close"
+        app:tint="@color/color_beige_dark"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+</LinearLayout>

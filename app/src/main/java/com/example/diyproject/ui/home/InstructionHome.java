@@ -1,4 +1,4 @@
-package com.example.diyproject.ui.instruction;
+package com.example.diyproject.ui.home;
 
 public class InstructionHome {
 

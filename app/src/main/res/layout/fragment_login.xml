@@ -33,8 +33,6 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_login"
         style="@style/ButtonStyle.Primary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="126dp"
         android:text="Войти" />
 
@@ -44,14 +42,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/space_large"
+        android:paddingBottom="@dimen/space_s"
+        android:paddingTop="@dimen/space_s"
         android:text="Вход с аккаунтом Google"
         android:textAllCaps="false"
+        app:cornerRadius="@dimen/radius_pill"
         app:icon="@drawable/ic_google"
-        app:iconTint="@null"
         app:iconPadding="8dp"
+        app:iconTint="@null"
         app:strokeColor="@color/color_beige_dark"
-        app:strokeWidth="1dp"
-        app:cornerRadius="@dimen/radius_pill" />
+        app:strokeWidth="1dp" />
 
     <TextView
         style="@style/TextAppearance.App.Title"

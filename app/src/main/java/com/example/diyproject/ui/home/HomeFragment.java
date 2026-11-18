@@ -1,4 +1,4 @@
-package com.example.diyproject.ui.common;
+package com.example.diyproject.ui.home;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,8 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.diyproject.R;
-import com.example.diyproject.ui.instruction.InstructionHome;
-import com.example.diyproject.ui.instruction.InstructionHomeAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;

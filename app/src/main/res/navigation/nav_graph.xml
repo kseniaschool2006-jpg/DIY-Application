@@ -94,8 +94,23 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.diyproject.ui.common.HomeFragment"
-        android:label="HomeFragment">
-         />
+        android:name="com.example.diyproject.ui.home.HomeFragment"
+        android:label="HomeFragment" />
+
+    <fragment
+        android:id="@+id/searchStartFragment"
+        android:name="com.example.diyproject.ui.search.SearchStartFragment"
+        android:label="SearchStartFragment"
+        tools:layout="@layout/fragment_search_start">
+        <action
+            android:id="@+id/action_searchStart_to_searchHistory"
+            app:destination="@id/searchHistoryFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/searchHistoryFragment"
+        android:name="com.example.diyproject.ui.search.SearchHistoryFragment"
+        android:label="SearchHistoryFragment"
+        tools:layout="@layout/fragment_search_history" />
+
 </navigation>

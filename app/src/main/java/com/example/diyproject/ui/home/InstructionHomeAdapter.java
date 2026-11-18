@@ -1,4 +1,4 @@
-package com.example.diyproject.ui.instruction;
+package com.example.diyproject.ui.home;
 
 import android.view.LayoutInflater;
 import android.view.View;

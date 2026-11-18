@@ -221,6 +221,7 @@
         <item name="boxCornerRadiusTopEnd">@dimen/radius_pill</item>
         <item name="boxCornerRadiusBottomStart">@dimen/radius_pill</item>
         <item name="boxCornerRadiusBottomEnd">@dimen/radius_pill</item>
+
     </style>
 
     <style name="Widget.App.Input.EditText" parent="Widget.Material3.TextInputEditText.OutlinedBox">

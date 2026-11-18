@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         // -1 = экрана пока нет, иконка просто ничего не делает
         int[] destIds = {
                 R.id.homeFragment,       // дом
-                R.id.storageFragmentMain,   // поиск
+                R.id.searchStartFragment,   // поиск
                 -1,                         // добавление
                 -1,                         // архив
                 -1                          // профиль

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_search_bar"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="20dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="10dp">
+
+    <ImageView
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_search"
+        app:tint="@color/color_beige_dark"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+    <TextView
+        style="@style/TextAppearance.App.Subtext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_s"
+        android:layout_weight="1"
+        android:text="Поиск идей" />
+
+    <ImageButton
+        android:id="@+id/btn_camera_search"
+        android:layout_width="18dp"
+        android:layout_height="15dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Камера"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_camera"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:tint="@color/color_beige_dark" />
+
+</LinearLayout>
