@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/toCheckFragment">
+    app:startDestination="@id/profileFragment">
 
     <fragment
         android:id="@+id/storageFragmentMain"
@@ -77,4 +77,9 @@
             app:destination="@id/editInstructionFragment" />
 
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.diyproject.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

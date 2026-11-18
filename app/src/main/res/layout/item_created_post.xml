@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="@dimen/radius_standard"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="212dp">
+
+        <ImageView
+            android:id="@+id/ivPostImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            />
+
+        <ImageButton
+            android:id="@+id/btnEditPost"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:background="@drawable/bg_circle_green"
+            android:src="@drawable/ic_edit"
+            app:tint="@color/color_white"
+             />
+
+
+    </FrameLayout>
+
+</androidx.cardview.widget.CardView>
