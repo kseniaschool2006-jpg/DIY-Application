@@ -8,7 +8,7 @@
     android:orientation="vertical"
     app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
-    <!-- Верхняя панель с кнопкой "Поделиться" -->
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +29,6 @@
         android:gravity="center_horizontal"
         android:layout_margin="@dimen/space_large">
 
-        <!-- Аватар пользователя (используем ShapeableImageView для круглой картинки) -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivProfileAvatar"
             android:layout_width="145dp"
@@ -38,7 +37,6 @@
             android:src="@drawable/ic_launcher_background"
             app:shapeAppearanceOverlay="@style/CircleImageStyle" />
 
-        <!-- Имя пользователя -->
         <TextView
             android:id="@+id/tvProfileName"
             android:layout_width="wrap_content"

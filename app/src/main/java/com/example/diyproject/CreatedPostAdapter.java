@@ -37,10 +37,8 @@ public class CreatedPostAdapter extends RecyclerView.Adapter<CreatedPostAdapter.
     public void onBindViewHolder( ViewHolder holder, int position) {
         PostItemProfile item = items.get(position);
 
-        // Устанавливаем картинку
         holder.binding.ivPostImage.setImageResource(item.imageResId);
 
-        // Клик по иконке карандаша для перехода к редактированию
         holder.binding.btnEditPost.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onEditClick(item);

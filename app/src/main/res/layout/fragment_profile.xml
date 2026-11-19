@@ -11,8 +11,9 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:elevation="0dp">
+        android:background="@color/color_white"
+        app:elevation="0dp"
+        app:liftOnScroll="false">
 
         <include
             android:id="@+id/profileHeader"
@@ -22,7 +23,7 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="@color/color_white"
             android:layout_marginBottom="@dimen/space_margin"
 
             app:tabMode="scrollable"
@@ -44,7 +45,6 @@
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingHorizontal="10dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
 

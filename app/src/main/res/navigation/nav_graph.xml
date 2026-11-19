@@ -81,5 +81,29 @@
         android:id="@+id/profileFragment"
         android:name="com.example.diyproject.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_albumDetailFragment"
+            app:destination="@id/albumDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/albumDetailFragment"
+        android:name="com.example.diyproject.AlbumDetailFragment"
+        android:label="fragment_album_detail"
+        tools:layout="@layout/fragment_album_detail" >
+        <argument
+            android:name="album_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+
+        <argument
+            android:name="album_title"
+            app:argType="string"
+            android:defaultValue="Альбом" />
+
+        <argument
+            android:name="album_count"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>

@@ -36,7 +36,7 @@ public class CreatedPostProfileFragment extends Fragment {
         int spacingInPx = Math.round(spacingInDp *getResources().getDisplayMetrics().density);
 
 
-        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, spacingInPx, true));
+        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, spacingInPx, false));
 
         List<PostItemProfile> mockList = new ArrayList<>();
 
@@ -45,6 +45,10 @@ public class CreatedPostProfileFragment extends Fragment {
         mockList.add(new PostItemProfile(2, R.drawable.post_image));
         mockList.add(new PostItemProfile(3, R.drawable.post_image));
         mockList.add(new PostItemProfile(4, R.drawable.post_image));
+        mockList.add(new PostItemProfile(5, R.drawable.post_image));
+        mockList.add(new PostItemProfile(6, R.drawable.post_image));
+        mockList.add(new PostItemProfile(7, R.drawable.post_image));
+        mockList.add(new PostItemProfile(8, R.drawable.post_image));
 
         CreatedPostAdapter adapter = new CreatedPostAdapter(mockList, new CreatedPostAdapter.OnEditClickListener() {
             @Override

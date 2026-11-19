@@ -13,9 +13,9 @@ public class ProfilePagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         if (position == 0) {
-            return new CreatedPostProfileFragment(); // Первая вкладка: Созданные
+            return new CreatedPostProfileFragment();
         } else {
-            return new SavedPostProfileFragment();       // Вторая вкладка: Сохраненные
+            return new SavedPostProfileFragment();
         }
     }
 

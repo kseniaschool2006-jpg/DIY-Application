@@ -3,6 +3,7 @@ package com.example.diyproject;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,19 +31,16 @@ public class SavedPostProfileFragment extends Fragment {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
 
-        // Переводим 10dp в пиксели
         int spacingInDp = 10;
         int spacingInPx = Math.round(spacingInDp *getResources().getDisplayMetrics().density);
 
-// Добавляем отступы (2 колонки, отступ в пикселях, true — если нужны отступы по краям экрана)
-        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, spacingInPx, true));
+        binding.recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, spacingInPx, false));
 
         List<AlbumItemProfile> mockAlbums = new ArrayList<>();
 
-        // Пример обычного альбома (id, название, количество, и 3 картинки для коллажа)
         mockAlbums.add(new AlbumItemProfile(
                 1,
-                "Брелки",
+                "Брелоки",
                 12,
                 R.drawable.album_image1,
                 R.drawable.album_image1,
@@ -63,7 +61,13 @@ public class SavedPostProfileFragment extends Fragment {
         SavedPostAdapter adapter = new SavedPostAdapter(mockAlbums, new SavedPostAdapter.OnAlbumClickListener() {
             @Override
             public void onAlbumClick(AlbumItemProfile album) {
-                // TODO: Здесь будет переход на экран конкретного альбома (передаем album.id)
+                Bundle args = new Bundle();
+                args.putInt("album_id", album.id);
+                args.putString("album_title", album.title);
+                args.putInt("album_count", album.count);
+
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                        .navigate(R.id.action_profileFragment_to_albumDetailFragment, args);
             }
 
             @Override
@@ -72,7 +76,6 @@ public class SavedPostProfileFragment extends Fragment {
             }
         });
 
-        // 5. Привязываем адаптер к RecyclerView
         binding.recyclerView.setAdapter(adapter);
 
         return view;
