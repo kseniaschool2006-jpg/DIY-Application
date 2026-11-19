@@ -25,7 +25,23 @@
         android:layout_marginTop="70dp"
         android:background="@drawable/bg_white_rounded_top"
         android:orientation="vertical"
-        android:padding="@dimen/space_margin"/>
+        android:padding="@dimen/space_margin">
+        <TextView
+            style="@style/TextAppearance.App.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:text="Идеи для вас" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_ideas"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingBottom="100dp" />
+    </LinearLayout>
 
 
 </FrameLayout>
