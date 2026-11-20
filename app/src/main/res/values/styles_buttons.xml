@@ -18,6 +18,13 @@
         <item name="elevation">0dp</item>
     </style>
 
+    <!-- Основная кнопка неактивная-->
+    <style name="ButtonStyle.Inactive" parent="ButtonStyle.Primary">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:enabled">false</item>
+        <item name="android:alpha">0.5</item>
+    </style>
+
     <!-- Второстепенная кнопка -->
     <style name="ButtonStyle.Secondary" parent="Widget.MaterialComponents.Button">
         <item name="android:layout_width">match_parent</item>

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,8 @@ public class ProfileFragment extends Fragment {
     private void setupHeaderListeners() {
 
         binding.profileHeader.btnEditProfile.setOnClickListener(v -> {
-            // TODO: Открыть экран редактирования профиля
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                    .navigate(R.id.action_profileFragment_to_editProfileFragment);
 
         });
 

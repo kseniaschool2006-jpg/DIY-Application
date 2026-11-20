@@ -60,7 +60,6 @@
             tools:text="0 подписчиков • 0 подписок"
             android:textAppearance="@style/TextAppearance.App.Body" />
 
-        <!-- Кнопка "Редактирование профиля" -->
         <Button
             android:id="@+id/btnEditProfile"
             style="@style/ButtonStyle.Secondary"
