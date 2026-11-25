@@ -1,4 +1,4 @@
-package com.example.diyproject;
+package com.example.diyproject.profile;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;

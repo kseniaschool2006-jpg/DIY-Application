@@ -1,9 +1,8 @@
-package com.example.diyproject;
+package com.example.diyproject.profile;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.diyproject.databinding.ItemAddAlbumBinding;

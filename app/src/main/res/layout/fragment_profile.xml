@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/color_white"
     android:padding="@dimen/space_margin"
-    tools:context=".ProfileFragment">
+    tools:context=".profile.ProfileFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.example.diyproject;
+package com.example.diyproject.profile;
 
 import android.os.Bundle;
 
@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.diyproject.R;
 import com.example.diyproject.databinding.FragmentSavedPostProfileBinding;
 import com.example.diyproject.model.AlbumItemProfile;
 

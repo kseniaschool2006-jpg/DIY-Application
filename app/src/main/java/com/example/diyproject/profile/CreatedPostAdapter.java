@@ -1,4 +1,4 @@
-package com.example.diyproject;
+package com.example.diyproject.profile;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;

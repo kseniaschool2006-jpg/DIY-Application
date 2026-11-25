@@ -1,4 +1,4 @@
-package com.example.diyproject;
+package com.example.diyproject.profile;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.diyproject.databinding.ItemUserCreatedPhotoBinding;
 import com.example.diyproject.model.PostItemProfile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserCreatedAdapter extends RecyclerView.Adapter<UserCreatedAdapter.ViewHolder>{

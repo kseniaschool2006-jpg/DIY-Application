@@ -1,4 +1,4 @@
-package com.example.diyproject;
+package com.example.diyproject.profile;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.diyproject.R;
 import com.example.diyproject.databinding.FragmentUserAccountBinding;
 import com.example.diyproject.model.PostItemProfile;
 import com.example.diyproject.model.UserProfile;
