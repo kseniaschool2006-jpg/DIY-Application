@@ -1,4 +1,4 @@
-package com.example.diyproject;
+package com.example.diyproject.profile;
 
 import android.app.AlertDialog;
 import android.net.Uri;
@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.diyproject.R;
 import com.example.diyproject.databinding.FragmentEditProfileBinding;
 
 import java.io.File;
