@@ -15,6 +15,10 @@ import java.util.Set;
 
 public class EditInstructionViewModel extends ViewModel {
 
+    private long instructionId = -1L;
+    private boolean isEditMode = false;
+    private boolean isDataLoaded = false;
+
     private final MutableLiveData<Uri> imageUri = new MutableLiveData<>();
     private final MutableLiveData<String> title = new MutableLiveData<>("");
     private final MutableLiveData<String> description = new MutableLiveData<>("");
@@ -25,6 +29,28 @@ public class EditInstructionViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<String>> selectedMaterialTitles = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<MaterialItem>> selectedMaterialItems = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<InstructionStep>> instructionSteps = new MutableLiveData<>(new ArrayList<>());
+
+    public long getInstructionId() {
+        return instructionId;
+    }
+
+    public void setInstructionId(long instructionId) {
+        this.instructionId = instructionId;
+        this.isEditMode = instructionId != -1L;
+    }
+
+    public boolean isEditMode() {
+        return isEditMode;
+    }
+
+    public boolean isDataLoaded() {
+        return isDataLoaded;
+    }
+
+    public void setDataLoaded(boolean dataLoaded) {
+        isDataLoaded = dataLoaded;
+    }
+    
 
     public LiveData<Uri> getImageUri() { return imageUri; }
     public void setImageUri(Uri uri) { imageUri.setValue(uri); }

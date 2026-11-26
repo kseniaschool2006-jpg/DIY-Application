@@ -187,12 +187,11 @@
 
     <Button
         android:id="@+id/btnShare"
-        style="@style/ButtonStyle.Primary"
+        style="@style/ButtonStyle.Inactive"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/space_margin"
         android:enabled="false"
-        android:alpha="0.5"
         android:text="Поделиться"
         app:layout_constraintBottom_toBottomOf="parent" />
 

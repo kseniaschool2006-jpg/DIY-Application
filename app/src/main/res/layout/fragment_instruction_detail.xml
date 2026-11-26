@@ -163,7 +163,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_xs"
-                app:chipSpacingHorizontal="@dimen/space_s"
+                app:chipSpacingHorizontal="@dimen/space_xs"
                 app:chipSpacingVertical="@dimen/space_xs" />
 
 

@@ -1,6 +1,0 @@
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Выбранный (отмеченный) — оранжевый -->
-    <item android:color="@color/color_orange" android:state_checked="true" />
-    <!-- Не выбранный — зелёный -->
-    <item android:color="@color/color_green" />
-</selector>

@@ -3,6 +3,7 @@ package com.example.diyproject.profile;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,7 +55,10 @@ public class CreatedPostProfileFragment extends Fragment {
         CreatedPostAdapter adapter = new CreatedPostAdapter(mockList, new CreatedPostAdapter.OnEditClickListener() {
             @Override
             public void onEditClick(PostItemProfile item) {
-                // Здесь будет логика перехода на экран редактирования при нажатии на карандаш
+                Bundle args = new Bundle();
+                args.putLong("instruction_id", item.getId());
+                NavHostFragment.findNavController(CreatedPostProfileFragment.this)
+                        .navigate(R.id.editInstructionFragment, args);
             }
         });
 

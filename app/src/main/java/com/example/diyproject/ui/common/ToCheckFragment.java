@@ -85,6 +85,10 @@ public class ToCheckFragment extends Fragment {
             NavHostFragment.findNavController(ToCheckFragment.this).navigate(R.id.action_toCheckFragment_to_storageFragmentMain);
         });
 
+        binding.btnGoToProfile.setOnClickListener(v -> {
+            NavHostFragment.findNavController(ToCheckFragment.this).navigate(R.id.action_toCheckFragment_to_profileFragment);
+        });
+
         return binding.getRoot();
     }
 

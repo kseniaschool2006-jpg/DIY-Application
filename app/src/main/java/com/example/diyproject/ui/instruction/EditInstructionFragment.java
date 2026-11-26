@@ -5,6 +5,7 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -101,6 +102,18 @@ public class EditInstructionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(EditInstructionViewModel.class);
+
+        long argInstructionId = getArguments() != null
+                ? getArguments().getLong("instruction_id", -1L)
+                : -1L;
+
+        if (!viewModel.isDataLoaded() && argInstructionId != -1L) {
+            viewModel.setInstructionId(argInstructionId);
+            loadInstructionForEdit(argInstructionId);
+            viewModel.setDataLoaded(true);
+        }
+
+
 
         // Аргументы с картинкой при старте (только если в ViewModel еще не сохранена картинка)
         if (getArguments() != null && viewModel.getImageUri().getValue() == null) {
@@ -309,12 +322,14 @@ public class EditInstructionFragment extends Fragment {
                     setupSelectedMaterialsAdapter(binding.rvSelectedMaterials);
                 }
             }
+            updateSubmitButtonState();
         });
 
         viewModel.getSelectedMaterialTitles().observe(getViewLifecycleOwner(), titles -> {
             if (titles != null) {
                 selectedMaterialTitles = titles;
             }
+            updateSubmitButtonState();
         });
 
         // Результат из экрана выбора материалов
@@ -326,6 +341,7 @@ public class EditInstructionFragment extends Fragment {
             if (selectedTitles != null) {
                 selectedMaterialTitles = selectedTitles;
                 viewModel.setSelectedMaterialTitles(selectedTitles);
+                updateSubmitButtonState();
 
                 List<MaterialItem> newItems = new ArrayList<>();
                 for (String title : selectedTitles) {
@@ -393,6 +409,7 @@ public class EditInstructionFragment extends Fragment {
                 }
                 setupStepsAdapter();
             }
+
         });
 
         if (viewModel.getInstructionSteps().getValue() == null || viewModel.getInstructionSteps().getValue().isEmpty()) {
@@ -407,6 +424,133 @@ public class EditInstructionFragment extends Fragment {
             viewModel.setInstructionSteps(steps);
             binding.rvInstructionSteps.smoothScrollToPosition(steps.size() - 1);
         });
+
+        setupSubmitButtonMode();
+    }
+
+    private void setupSubmitButtonMode() {
+        if (binding == null) return;
+
+        if (viewModel != null && viewModel.isEditMode()) {
+            binding.btnShare.setText("Сохранить");
+            binding.btnShare.setEnabled(true);
+            binding.btnShare.setAlpha(1.0f);
+            binding.btnShare.setOnClickListener(v -> saveEditedInstruction());
+        } else {
+            binding.btnShare.setText("Поделиться");
+            binding.btnShare.setOnClickListener(v -> publishNewInstruction());
+            updateSubmitButtonState();
+        }
+    }
+
+    private void updateSubmitButtonState() {
+        if (binding == null || viewModel == null) return;
+
+        if (viewModel.isEditMode()) {
+            binding.btnShare.setEnabled(true);
+            binding.btnShare.setAlpha(1.0f);
+            return;
+        }
+
+        boolean isFormComplete = areAllRequiredFieldsFilled();
+        binding.btnShare.setEnabled(isFormComplete);
+        binding.btnShare.setAlpha(isFormComplete ? 1.0f : 0.5f);
+    }
+
+    private boolean areAllRequiredFieldsFilled() {
+        if (viewModel == null) return false;
+
+        Uri image = viewModel.getImageUri().getValue();
+        String title = viewModel.getTitle().getValue();
+        String description = viewModel.getDescription().getValue();
+        String time = viewModel.getSelectedTime().getValue();
+        List<String> categories = viewModel.getSelectedCategories().getValue();
+        List<MaterialItem> materials = viewModel.getSelectedMaterialItems().getValue();
+        ArrayList<String> materialTitles = viewModel.getSelectedMaterialTitles().getValue();
+        List<InstructionStep> currentSteps = viewModel.getInstructionSteps().getValue();
+
+        boolean hasImage = image != null;
+        boolean hasTitle = title != null && !title.trim().isEmpty();
+        boolean hasDescription = description != null && !description.trim().isEmpty();
+        boolean hasTime = time != null && !time.trim().isEmpty();
+        boolean hasCategory = categories != null && !categories.isEmpty();
+        boolean hasMaterials = (materials != null && !materials.isEmpty())
+                || (materialTitles != null && !materialTitles.isEmpty());
+
+        boolean hasValidStep = false;
+        if (currentSteps != null && !currentSteps.isEmpty()) {
+            for (InstructionStep step : currentSteps) {
+                if (step != null && step.getSubtitle() != null && !TextUtils.isEmpty(step.getSubtitle().trim())) {
+                    hasValidStep = true;
+                    break;
+                }
+            }
+        }
+
+        android.util.Log.d("ShareCheck",
+                "img=" + hasImage +
+                        ", title=" + hasTitle +
+                        ", desc=" + hasDescription +
+                        ", time=" + hasTime +
+                        ", cat=" + hasCategory +
+                        ", mat=" + hasMaterials +
+                        ", step=" + hasValidStep);
+
+        return hasImage && hasTitle && hasDescription && hasTime && hasCategory && hasMaterials && hasValidStep;
+    }
+
+    private void publishNewInstruction() {
+        if (!areAllRequiredFieldsFilled()) {
+            Toast.makeText(requireContext(), "Заполните все поля инструкции", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // TODO: сохранить новую инструкцию в БД
+        Toast.makeText(requireContext(), "Инструкция опубликована", Toast.LENGTH_SHORT).show();
+        NavHostFragment.findNavController(this).popBackStack();
+    }
+
+    private void loadInstructionForEdit(long id) {
+        // ВРЕМЕННО: тестовые данные для проверки режима редактирования.
+        // Позже замени этот блок на загрузку инструкции + материалов + шагов из БД по id.
+        String sampleImageUri = Uri.parse(
+                "android.resource://" + requireContext().getPackageName() + "/" + R.drawable.post_image
+        ).toString();
+
+        viewModel.setImageUri(Uri.parse(sampleImageUri));
+        viewModel.setTitle("Брелок лягушка");
+        viewModel.setDescription("Этот милый брелок в виде лягушки идеально подойдет как подвеска на ключи, сумку или рюкзак");
+        viewModel.setSelectedTime("30 минут");
+
+        List<String> themes = new ArrayList<>();
+        themes.add("Брелок крючком");
+        viewModel.setSelectedCategories(themes);
+
+        Set<String> tags = new LinkedHashSet<>();
+        tags.add("брелок");
+        tags.add("вязание");
+        viewModel.setHashtags(tags);
+
+        List<MaterialItem> materials = new ArrayList<>();
+        materials.add(new MaterialItem("Зеленые нитки", "1 моток", null, R.drawable.ic_material));
+        materials.add(new MaterialItem("Крючок 2,5 мм или 3 мм", "", null, R.drawable.ic_material));
+        viewModel.setSelectedMaterialItems(materials);
+
+        ArrayList<String> titles = new ArrayList<>();
+        for (MaterialItem m : materials) {
+            titles.add(m.getTitle());
+        }
+        viewModel.setSelectedMaterialTitles(titles);
+
+        List<InstructionStep> loadedSteps = new ArrayList<>();
+        loadedSteps.add(new InstructionStep("Набираем кольцо амигуруми из 6 столбиков без накида.", Uri.parse(sampleImageUri)));
+        viewModel.setInstructionSteps(loadedSteps);
+    }
+
+    private void saveEditedInstruction() {
+        // TODO: сохранить изменения по viewModel.getInstructionId() в БД
+        Toast.makeText(requireContext(), "Изменения сохранены", Toast.LENGTH_SHORT).show();
+        NavHostFragment.findNavController(this).popBackStack();
     }
 
     private void setupStepsAdapter() {

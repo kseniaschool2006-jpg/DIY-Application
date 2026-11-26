@@ -11,6 +11,7 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.diyproject.R;
@@ -101,7 +102,7 @@ public class InstructionDetailFragment extends Fragment {
                 "Брелок крючком"
         );
 
-        bindHashtags(Arrays.asList("Брелок", "Вязание крючком", "Нитки"));
+        bindHashtags(Arrays.asList("Брелок", "Вязаниекрючком", "Нитки", "Рукоделие","Дляновыичков"));
 
         bindMaterials(Arrays.asList(
                 new MaterialItem("Зеленые нитки", true),
@@ -172,17 +173,20 @@ public class InstructionDetailFragment extends Fragment {
         }
 
         binding.chipGroupHashtags.setVisibility(View.VISIBLE);
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
 
         for (String tag : hashtags) {
-            String formatted = tag.startsWith("#") ? tag : "#" + tag;
-            Chip chip = new Chip(
-                    new ContextThemeWrapper(requireContext(), R.style.ChipStyle_Hashtag),
-                    null,
-                    0
+            if (tag == null) continue;
+            String cleanTag = tag.replace("#", "").trim();
+            if (cleanTag.isEmpty()) continue;
+
+            TextView tagView = (TextView) inflater.inflate(
+                    R.layout.item_hashtag,
+                    binding.chipGroupHashtags,
+                    false
             );
-            chip.setText(formatted);
-            chip.setEnsureMinTouchTargetSize(false);
-            binding.chipGroupHashtags.addView(chip);
+            tagView.setText(getString(R.string.tag_hash_format, cleanTag));
+            binding.chipGroupHashtags.addView(tagView);
         }
 
 

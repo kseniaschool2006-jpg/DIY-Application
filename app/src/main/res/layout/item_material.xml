@@ -12,7 +12,7 @@
         android:id="@+id/cbMaterialAvailable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:buttonTint="@xml/tint_material_checkbox"
+        app:buttonTint="@color/radio_button_tint"
         tools:checked="false" />
 
     <TextView

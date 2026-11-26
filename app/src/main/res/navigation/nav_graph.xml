@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/profileFragment">
+    app:startDestination="@id/toCheckFragment">
 
     <fragment
         android:id="@+id/storageFragmentMain"
@@ -103,6 +103,10 @@
             android:name="instructionImageUri"
             app:argType="string"
             android:defaultValue="empty"/>
+        <argument
+            android:name="instruction_id"
+            android:defaultValue="-1L"
+            app:argType="long" />
         <action
             android:id="@+id/action_editInstructionFragment_to_categorySelectionFragment"
             app:destination="@id/categorySelectionFragment" />
@@ -124,6 +128,9 @@
         <action
             android:id="@+id/action_toCheckFragment_to_editInstructionFragment"
             app:destination="@id/editInstructionFragment" />
+        <action
+            android:id="@+id/action_toCheckFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
 
     </fragment>
     <fragment
