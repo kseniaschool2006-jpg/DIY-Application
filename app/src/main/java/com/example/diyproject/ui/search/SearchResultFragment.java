@@ -47,7 +47,7 @@ public class SearchResultFragment extends Fragment {
         RecyclerView rv = view.findViewById(R.id.rv_results);
         rv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         InstructionHomeAdapter adapter = new InstructionHomeAdapter(instruction -> {
-            // TODO: открытие экрана инструкции
+            // открытие экрана инструкции потом для настеньки
         });
         rv.setAdapter(adapter);
         adapter.setItems(InstructionRepository.search(query));
