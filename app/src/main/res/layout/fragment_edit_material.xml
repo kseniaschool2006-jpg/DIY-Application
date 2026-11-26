@@ -27,10 +27,14 @@
             android:padding="@dimen/space_margin">
 
             <FrameLayout
+                android:id="@+id/frameImagePicker"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/space_large">
+                android:layout_marginBottom="@dimen/space_large"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless">
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
@@ -48,7 +52,6 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <FrameLayout
-
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="4dp"
                     android:layout_width="35dp"
@@ -66,11 +69,13 @@
             </FrameLayout>
 
             <include
+                android:id="@+id/cardTitle"
                 layout="@layout/view_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <include
+                android:id="@+id/cardDescription"
                 layout="@layout/view_input_with_tag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -86,15 +91,14 @@
         </LinearLayout>
     </ScrollView>
 
-
     <Button
         android:id="@+id/btnSave"
         style="@style/ButtonStyle.Primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/space_margin"
-        android:enabled="false"
-        android:alpha="0.5"
+        android:enabled="true"
+        android:alpha="1.0"
         android:text="Сохранить"
         app:layout_constraintBottom_toBottomOf="parent" />
 

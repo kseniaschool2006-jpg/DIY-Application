@@ -1,51 +1,42 @@
 package com.example.diyproject.ui.storage;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.diyproject.R;
-
+import com.example.diyproject.databinding.FragmentNewMaterial2Binding;
 
 public class NewMaterialFragment2 extends Fragment {
 
+    private FragmentNewMaterial2Binding binding;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_new_material2, container, false);
+        binding = FragmentNewMaterial2Binding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
 
-        Button btnGoToEdit = view.findViewById(R.id.btnGoToEdit);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        btnGoToEdit.setOnClickListener(v -> {
+        binding.btnGoToEdit.setOnClickListener(v -> {
             NavHostFragment.findNavController(NewMaterialFragment2.this)
                     .navigate(R.id.action_newMaterialFragment2_to_editMaterialFragment);
         });
-
-        return view;
     }
 
-    private void setupToolbarForEditScreen(View view) {
-        View toolbar = view.findViewById(R.id.customToolbar);
-        ImageButton btnLeft = toolbar.findViewById(R.id.btnLeftAction);
-        ImageButton btnRight = toolbar.findViewById(R.id.btnRightAction);
-        TextView tvTitle = toolbar.findViewById(R.id.tvToolbarTitle);
-
-        tvTitle.setText("Редактировать материал");
-
-        btnLeft.setImageResource(R.drawable.ic_arrow_back);
-        btnLeft.setOnClickListener(v -> {
-            requireActivity().getOnBackPressedDispatcher().onBackPressed();
-        });
-
-        btnRight.setVisibility(View.GONE);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }
