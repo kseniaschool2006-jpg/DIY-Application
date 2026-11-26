@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.diyproject.R;
 import com.example.diyproject.databinding.FragmentAlbumDetailBinding;
+import com.example.diyproject.instructionDetail.InstructionDetailFragment;
 import com.example.diyproject.model.AlbumInstructionItem;
 
 import java.util.ArrayList;
@@ -95,7 +97,10 @@ public class AlbumDetailFragment extends Fragment {
         mockItems.add(new AlbumInstructionItem(6, "Брелок на ключи", R.drawable.album_image1));
 
         AlbumInstructionsAdapter adapter = new AlbumInstructionsAdapter(mockItems, item -> {
-            // TODO: Открыть экран просмотра инструкции (item.id)
+            Bundle args = new Bundle();
+            args.putLong(InstructionDetailFragment.ARG_INSTRUCTION_ID, item.id);
+            NavHostFragment.findNavController(this)
+                    .navigate(R.id.instructionDetailFragment, args);
         });
 
         binding.rvAlbumInstructions.setAdapter(adapter);

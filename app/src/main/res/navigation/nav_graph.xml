@@ -108,6 +108,9 @@
             android:name="album_count"
             app:argType="integer"
             android:defaultValue="0" />
+        <action
+            android:id="@+id/action_albumDetailFragment_to_instructionDetailFragment"
+            app:destination="@id/instructionDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
@@ -118,5 +121,23 @@
         android:id="@+id/userAccountFragment"
         android:name="com.example.diyproject.profile.UserAccountFragment"
         android:label="fragment_user_account"
-        tools:layout="@layout/fragment_user_account" />
+        tools:layout="@layout/fragment_user_account" >
+        <argument
+            android:name="user_id"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/instructionDetailFragment"
+        android:name="com.example.diyproject.instructionDetail.InstructionDetailFragment"
+        android:label="fragment_instruction_detail"
+        tools:layout="@layout/fragment_instruction_detail" >
+        <argument
+            android:name="instruction_id"
+            android:defaultValue="-1L"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_instructionDetailFragment_to_userAccountFragment"
+            app:destination="@id/userAccountFragment" />
+    </fragment>
 </navigation>

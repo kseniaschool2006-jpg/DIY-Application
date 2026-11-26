@@ -42,6 +42,11 @@ public class UserAccountFragment extends Fragment {
         loadUserAccount();
         setupListeners();
         setupCreatedItems();
+
+        if (getArguments() != null) {
+            long targetUserId = getArguments().getLong("user_id", -1L);
+            String targetAuthorName = getArguments().getString("author_name", "");
+        }
     }
 
 
