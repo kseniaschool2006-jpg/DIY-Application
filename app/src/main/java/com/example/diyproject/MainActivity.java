@@ -39,19 +39,17 @@ public class MainActivity extends AppCompatActivity {
                 .findFragmentById(R.id.nav_host_fragment);
         NavController nav = host.getNavController();
 
-        // ЗАМЕНИТЬ на реальные id фрагментов из nav_graph
-        // -1 = экрана пока нет, иконка просто ничего не делает
         int[] destIds = {
-                R.id.homeFragment,       // дом
-                R.id.searchStartFragment,   // поиск
-                -1,                         // добавление
-                -1,                         // архив
-                -1                          // профиль
+                R.id.homeFragment,
+                R.id.searchStartFragment,
+                R.id.editInstructionFragment,
+                R.id.storageFragmentMain,
+                R.id.profileFragment
         };
         // список экранов где должно быть видно нижнее меню
         // но которые не являются вкладками главными
         int[] extraVisibleIds = {
-                R.id.searchResultFragment
+                R.id.searchResultFragment, R.id.profileFragment
         };
         View[] items = {findViewById(R.id.navHome), findViewById(R.id.navSearch),
                 findViewById(R.id.navAdd), findViewById(R.id.navArchive),

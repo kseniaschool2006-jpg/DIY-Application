@@ -80,7 +80,7 @@
             <ImageView
                 android:id="@+id/navProfile"
                 style="@style/NavIcon"
-                android:src="@drawable/ic_profile" />
+                android:src="@drawable/ic_profile2" />
         </FrameLayout>
     </LinearLayout>
 
