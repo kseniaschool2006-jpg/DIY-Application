@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <ImageButton
+            android:id="@+id/btnShareProfile"
+            style="@style/IconButtonStyle"
+            android:layout_alignParentEnd="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_share" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_margin="@dimen/space_large">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivProfileAvatar"
+            android:layout_width="145dp"
+            android:layout_height="145dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+            app:shapeAppearanceOverlay="@style/CircleImageStyle" />
+
+        <TextView
+            android:id="@+id/tvProfileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
+            tools:text="Имя Фамилия"
+            android:textAppearance="@style/TextAppearance.App.Title.OnPages" />
+
+        <TextView
+            android:id="@+id/tvProfileUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="\@user"
+            android:textAppearance="@style/TextAppearance.App.Subtext" />
+
+
+        <TextView
+            android:id="@+id/tvProfileStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="0 подписчиков • 0 подписок"
+            android:textAppearance="@style/TextAppearance.App.Body" />
+
+        <Button
+            android:id="@+id/btnEditProfile"
+            style="@style/ButtonStyle.Secondary"
+            android:layout_marginTop="@dimen/space_s"
+            android:text="Редактирование профиля" />
+    </LinearLayout>
+
+
+
+
+
+
+</LinearLayout>

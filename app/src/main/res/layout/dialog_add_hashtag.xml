@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/space_margin"
+    android:background="@drawable/bg_popup_menu">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Добавить хештег"
+        android:textAppearance="@style/TextAppearance.App.Title"
+        android:textColor="@color/color_beige_dark"
+        android:layout_marginBottom="@dimen/space_margin" />
+
+    <AutoCompleteTextView
+        android:id="@+id/etNewTag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Начните вводить тег..."
+        android:inputType="text"
+        android:textAppearance="@style/TextAppearance.App.Body"
+        android:textColor="@color/color_beige_dark"
+        android:textColorHint="@color/color_beige_dark_30"
+        android:background="@drawable/bg_input_box"
+        android:popupBackground="@drawable/bg_popup_menu"
+        android:padding="@dimen/space_s"
+        android:layout_marginBottom="@dimen/space_margin"
+        android:completionThreshold="1" />
+
+    <Button
+        android:id="@+id/btnAddTag"
+        style="@style/ButtonStyle.Primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Добавить" />
+
+</LinearLayout>

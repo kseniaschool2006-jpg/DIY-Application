@@ -1,16 +1,14 @@
 package com.example.diyproject.ui.common;
 
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.diyproject.R;
+import com.example.diyproject.databinding.DialogSaveDraftBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class SaveDraftBottomSheet extends BottomSheetDialogFragment {
@@ -21,6 +19,7 @@ public class SaveDraftBottomSheet extends BottomSheetDialogFragment {
     }
 
     private OnDraftActionListener listener;
+    private DialogSaveDraftBinding binding;
 
     public void setListener(OnDraftActionListener listener) {
         this.listener = listener;
@@ -30,21 +29,24 @@ public class SaveDraftBottomSheet extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_save_draft, container, false);
+        binding = DialogSaveDraftBinding.inflate(inflater, container, false);
 
-        Button btnDelete = view.findViewById(R.id.btnDelete);
-        Button btnSaveDraft = view.findViewById(R.id.btnSaveDraft);
-
-        btnDelete.setOnClickListener(v -> {
+        binding.btnDelete.setOnClickListener(v -> {
             if (listener != null) listener.onDelete();
             dismiss();
         });
 
-        btnSaveDraft.setOnClickListener(v -> {
+        binding.btnSaveDraft.setOnClickListener(v -> {
             if (listener != null) listener.onSaveDraft();
             dismiss();
         });
 
-        return view;
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

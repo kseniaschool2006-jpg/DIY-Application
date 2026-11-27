@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/toCheckFragment">
 
     <fragment
         android:id="@+id/storageFragmentMain"
@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_storageFragmentMain_to_newMaterialFragment1"
             app:destination="@id/newMaterialFragment1" />
+        <action
+            android:id="@+id/action_storageFragmentMain_to_editMaterialFragment"
+            app:destination="@id/editMaterialFragment" />
     </fragment>
     <fragment
         android:id="@+id/newMaterialFragment1"
@@ -21,6 +24,15 @@
         <action
             android:id="@+id/action_newMaterialFragment1_to_newMaterialFragment2"
             app:destination="@id/newMaterialFragment2" />
+        <action
+            android:id="@+id/action_newMaterialFragment1_to_editMaterialFragment"
+            app:destination="@id/editMaterialFragment" />
+        <action
+            android:id="@+id/action_newMaterialFragment1_to_materialSelectionFragment"
+            app:destination="@id/materialSelectionFragment" />
+        <action
+            android:id="@+id/action_newMaterialFragment1_to_storageFragmentMain"
+            app:destination="@id/storageFragmentMain" />
     </fragment>
     <fragment
         android:id="@+id/newMaterialFragment2"
@@ -47,9 +59,40 @@
         android:name="com.example.diyproject.ui.storage.EditMaterialFragment"
         android:label="fragment_edit_material"
         tools:layout="@layout/fragment_edit_material" >
+        <argument
+            android:name="materialTitle"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="materialDescription"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="materialTag"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="materialIconRes"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="materialImageUriString"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="materialPosition"
+            app:argType="integer"
+            android:defaultValue="-1" />
         <action
             android:id="@+id/action_editMaterialFragment_to_categorySelectionFragment"
             app:destination="@id/categorySelectionFragment" />
+        <action
+            android:id="@+id/action_editMaterialFragment_to_storageFragmentMain"
+            app:destination="@id/storageFragmentMain" />
     </fragment>
     <fragment
         android:id="@+id/editInstructionFragment"
@@ -75,9 +118,104 @@
         <action
             android:id="@+id/action_toCheckFragment_to_editInstructionFragment"
             app:destination="@id/editInstructionFragment" />
-
+        <action
+            android:id="@+id/action_toCheckFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/materialSelectionFragment"
+        android:name="com.example.diyproject.ui.storage.MaterialSelectionFragment"
+        android:label="fragment_material_selection"
+        tools:layout="@layout/fragment_material_selection" >
+        <argument
+            android:name="selectedMaterials"
+            app:argType="string[]"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="screenTitle"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="Выбор материалов" />
+        <argument
+            android:name="showSettings"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="showCheckBox"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <action
+            android:id="@+id/action_materialSelectionFragment_to_editMaterialFragment"
+            app:destination="@id/editMaterialFragment" />
+        <action
+            android:id="@+id/action_materialSelectionFragment_to_storageFragmentMain"
+            app:destination="@id/storageFragmentMain" />
     </fragment>
 
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.diyproject.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_albumDetailFragment"
+            app:destination="@id/albumDetailFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/albumDetailFragment"
+        android:name="com.example.diyproject.profile.AlbumDetailFragment"
+        android:label="fragment_album_detail"
+        tools:layout="@layout/fragment_album_detail" >
+        <argument
+            android:name="album_id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+
+        <argument
+            android:name="album_title"
+            app:argType="string"
+            android:defaultValue="Альбом" />
+
+        <argument
+            android:name="album_count"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <action
+            android:id="@+id/action_albumDetailFragment_to_instructionDetailFragment"
+            app:destination="@id/instructionDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.diyproject.profile.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
+    <fragment
+        android:id="@+id/userAccountFragment"
+        android:name="com.example.diyproject.profile.UserAccountFragment"
+        android:label="fragment_user_account"
+        tools:layout="@layout/fragment_user_account" >
+        <argument
+            android:name="user_id"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/instructionDetailFragment"
+        android:name="com.example.diyproject.instructionDetail.InstructionDetailFragment"
+        android:label="fragment_instruction_detail"
+        tools:layout="@layout/fragment_instruction_detail" >
+        <argument
+            android:name="instruction_id"
+            android:defaultValue="-1L"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_instructionDetailFragment_to_userAccountFragment"
+            app:destination="@id/userAccountFragment" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.diyproject.ui.authorization.LoginFragment"
@@ -141,5 +279,4 @@
             app:popUpTo="@id/searchResultFragment"
             app:popUpToInclusive="true" />
     </fragment>
-
 </navigation>

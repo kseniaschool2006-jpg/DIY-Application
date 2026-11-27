@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingEnd="@dimen/space_s"
+    android:paddingStart="@dimen/space_s"
+    android:paddingBottom="@dimen/space_s"
+    android:background="@color/color_white">
+
+    <ImageButton
+        android:id="@+id/btnClose"
+        style="@style/IconButtonStyle"
+        android:src="@drawable/ic_close"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tvToolbarTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:textAppearance="@style/TextAppearance.App.Title.OnPages"
+        android:textColor="@color/color_beige_dark"
+        android:layout_marginStart="@dimen/space_s"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnSaveProfile"
+        app:layout_constraintStart_toEndOf="@id/btnClose"
+        android:text="@string/edit_profile" />
+
+    <Button
+        android:id="@+id/btnSaveProfile"
+        style="@style/ButtonStyle.Inactive"
+        android:text="@string/done"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

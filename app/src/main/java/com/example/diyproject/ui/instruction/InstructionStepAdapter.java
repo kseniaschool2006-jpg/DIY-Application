@@ -6,14 +6,11 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.diyproject.R;
+import com.example.diyproject.databinding.ItemInstructionStepBinding;
 
 import java.util.List;
 
@@ -32,30 +29,22 @@ public class InstructionStepAdapter extends RecyclerView.Adapter<InstructionStep
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        EditText etTitle;
-        EditText etSubtitle;
-        ImageButton btnGallery;
-        View cardPreview;
-        ImageView ivPreview;
+        ItemInstructionStepBinding binding;
         TextWatcher titleWatcher;
         TextWatcher subtitleWatcher;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            etTitle = itemView.findViewById(R.id.etStepTitle);
-            etSubtitle = itemView.findViewById(R.id.etStepSubtitle);
-            btnGallery = itemView.findViewById(R.id.ivStepIcon);
-            cardPreview = itemView.findViewById(R.id.cardStepPreview);
-            ivPreview = itemView.findViewById(R.id.ivStepPreview);
+        public ViewHolder(@NonNull ItemInstructionStepBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_instruction_step, parent, false);
-        return new ViewHolder(view);
+        ItemInstructionStepBinding binding = ItemInstructionStepBinding.inflate(
+                LayoutInflater.from(parent.getContext()), parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
@@ -63,23 +52,23 @@ public class InstructionStepAdapter extends RecyclerView.Adapter<InstructionStep
         InstructionStep step = steps.get(position);
 
         if (holder.titleWatcher != null) {
-            holder.etTitle.removeTextChangedListener(holder.titleWatcher);
+            holder.binding.etStepTitle.removeTextChangedListener(holder.titleWatcher);
         }
         if (holder.subtitleWatcher != null) {
-            holder.etSubtitle.removeTextChangedListener(holder.subtitleWatcher);
+            holder.binding.etStepSubtitle.removeTextChangedListener(holder.subtitleWatcher);
         }
 
-        holder.etTitle.setText(step.getTitle());
-        holder.etSubtitle.setText(step.getSubtitle());
-        holder.etSubtitle.setHint("Шаг " + (position + 1));
+        holder.binding.etStepTitle.setText(step.getTitle());
+        holder.binding.etStepSubtitle.setText(step.getSubtitle());
+        holder.binding.etStepSubtitle.setHint("Шаг " + (position + 1));
 
         if (step.getImageUri() != null) {
-            holder.ivPreview.setImageURI(step.getImageUri());
-            holder.cardPreview.setVisibility(View.VISIBLE);
-            holder.btnGallery.setVisibility(View.GONE);
+            holder.binding.ivStepPreview.setImageURI(step.getImageUri());
+            holder.binding.cardStepPreview.setVisibility(View.VISIBLE);
+            holder.binding.ivStepIcon.setVisibility(View.GONE);
         } else {
-            holder.cardPreview.setVisibility(View.GONE);
-            holder.btnGallery.setVisibility(View.VISIBLE);
+            holder.binding.cardStepPreview.setVisibility(View.GONE);
+            holder.binding.ivStepIcon.setVisibility(View.VISIBLE);
         }
 
         holder.titleWatcher = new TextWatcher() {
@@ -104,8 +93,8 @@ public class InstructionStepAdapter extends RecyclerView.Adapter<InstructionStep
             @Override public void afterTextChanged(Editable s) {}
         };
 
-        holder.etTitle.addTextChangedListener(holder.titleWatcher);
-        holder.etSubtitle.addTextChangedListener(holder.subtitleWatcher);
+        holder.binding.etStepTitle.addTextChangedListener(holder.titleWatcher);
+        holder.binding.etStepSubtitle.addTextChangedListener(holder.subtitleWatcher);
 
         View.OnClickListener pickImageListener = v -> {
             int pos = holder.getBindingAdapterPosition();
@@ -113,8 +102,8 @@ public class InstructionStepAdapter extends RecyclerView.Adapter<InstructionStep
                 imagePickListener.onImagePick(pos);
             }
         };
-        holder.btnGallery.setOnClickListener(pickImageListener);
-        holder.cardPreview.setOnClickListener(pickImageListener);
+        holder.binding.ivStepIcon.setOnClickListener(pickImageListener);
+        holder.binding.cardStepPreview.setOnClickListener(pickImageListener);
     }
 
     @Override

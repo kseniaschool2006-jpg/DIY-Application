@@ -1,27 +1,30 @@
 package com.example.diyproject.ui.common;
 
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.diyproject.R;
-
+import com.example.diyproject.databinding.FragmentToCheckBinding;
 
 //КЛАСС ПРОСТО ДЛЯ ПРОВЕРКИ, КОГДА БУДЕТ ГЛАВНЫЙ ЭКРАН ВСЕ ПЕРЕНЕСТИ
 public class ToCheckFragment extends Fragment {
 
     private ActivityResultLauncher<PickVisualMediaRequest> pickMedia;
+    private FragmentToCheckBinding binding;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,51 +45,56 @@ public class ToCheckFragment extends Fragment {
                     }
                 }
         );
-
     }
 
-        private boolean isVideoDurationValid(Uri uri) {
-
-            String mimeType = requireContext().getContentResolver().getType(uri);
-            if (mimeType == null || !mimeType.startsWith("video/")) {
-                return true;
-            }
-
-            try {
-                android.media.MediaMetadataRetriever retriever = new android.media.MediaMetadataRetriever();
-                retriever.setDataSource(requireContext(), uri);
-                String durationStr = retriever.extractMetadata(
-                        android.media.MediaMetadataRetriever.METADATA_KEY_DURATION);
-                retriever.release();
-
-                if (durationStr != null) {
-                    long durationMs = Long.parseLong(durationStr);
-                    return durationMs <= 30000;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return false;
+    private boolean isVideoDurationValid(Uri uri) {
+        String mimeType = requireContext().getContentResolver().getType(uri);
+        if (mimeType == null || !mimeType.startsWith("video/")) {
+            return true;
         }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_to_check, container, false);
+        try {
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(requireContext(), uri);
+            String durationStr = retriever.extractMetadata(
+                    MediaMetadataRetriever.METADATA_KEY_DURATION);
+            retriever.release();
 
-        Button btnCreate = view.findViewById(R.id.btnGoToEditInstruction);
-        btnCreate.setOnClickListener(v -> {
+            if (durationStr != null) {
+                long durationMs = Long.parseLong(durationStr);
+                return durationMs <= 30000;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentToCheckBinding.inflate(inflater, container, false);
+
+        binding.btnGoToEditInstruction.setOnClickListener(v -> {
             pickMedia.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageAndVideo.INSTANCE)
                     .build());
         });
 
-        Button btnGoToStorage = view.findViewById(R.id.btnGoToStorage);
-        btnGoToStorage.setOnClickListener(v -> {
+        binding.btnGoToStorage.setOnClickListener(v -> {
             NavHostFragment.findNavController(ToCheckFragment.this).navigate(R.id.action_toCheckFragment_to_storageFragmentMain);
         });
 
+        binding.btnGoToProfile.setOnClickListener(v -> {
+            NavHostFragment.findNavController(ToCheckFragment.this).navigate(R.id.action_toCheckFragment_to_profileFragment);
+        });
 
-        return view;
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

@@ -4,4 +4,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="tag_hash_format"># %1$s</string>
+    <string name="edit_profile">Редактирование профиля</string>
+    <string name="done">Готово</string>
+    <string name="description_in_edit_profile">Позаботьтесь о конфиденциальности личных данных. Добавляемая вами информация видна всем, кто может просматривать ваш профиль.</string>
+    <string name="edit_btn">Редактировать</string>
 </resources>

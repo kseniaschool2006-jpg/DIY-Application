@@ -28,6 +28,14 @@
             android:layout_marginTop="@dimen/space_margin"
             android:text="Редактирование инструкции" />
 
+        <Button
+            android:id="@+id/btnGoToProfile"
+            style="@style/ButtonStyle.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_margin"
+            android:text="Профиль" />
+
     </LinearLayout>
 
 </FrameLayout>
